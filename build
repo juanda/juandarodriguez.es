@@ -1,0 +1,2 @@
+sphinx-build -D html_theme='nature' -b html source ~/sites/juandarodriguez.es/
+

@@ -1,0 +1,2 @@
+sphinx-build -D html_theme='wp' -b html source ~/sites/articulos_juandarodriguez.es/
+

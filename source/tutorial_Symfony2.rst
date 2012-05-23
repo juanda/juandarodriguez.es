@@ -1,24 +1,59 @@
 .. codeauthor:: Juan David Rodríguez García <juandavid.rodriguez@ite.educacion.es>
 
-Unidad 3: Symfony2 a vista de pájaro
+Tutorial: Symfony2 a vista de pájaro
 ====================================
 
-El objetivo fundamental de este curso es que aprendas a desarrollar aplicaciones 
-web de calidad con *Symfony2*, un potente framework de desarrollo en *PHP*. Para 
-conocerlo en profundidad utilizaremos una estrategia de acercamiento en espiral a
-nuestro objeto de estudio, es decir, lo rodearemos trazando círculos de radio cada
-vez más pequeños, de forma que cada vuelta que demos nos revelará un conocimiento 
-más profundo de esta magnífica herramienta de desarrollo. 
+El objetivo este tutorial es ofrecer una visión panorámica del framework PHP para el
+desarrollo de aplicaciones web *Symfony2*. El desarrollo de una sencilla aplicación
+aplicación web servirá como elemento vertebrador de este tutorial.
 
-Esta estrategia nos proporcionará resultados visibles y prácticos desde el 
-principio, desde la primera vuelta, aunque ello será a costa de tratar 
-superficialmente algunos conceptos que, progresivamente, irán definiéndose con más
-precisión a medida que avanza el curso.
+Para seguir el tutorial necesitarás un entorno con:
 
-En esta unidad volveremos a desarrollar la aplicación que construimos en la unidad 2.
-Pero ahora utilizaremos *Symfony2*. Será nuestra primera vuelta, la menos precisa
-pero la más panorámica, que nos proporcionará una primera imagen del framework aún
-difusa pero suficiente para mostrar sus características fundamentales.
+* un servidor web con PHP 5.3.x (x>2)
+
+* un servidor MySQL 5
+
+* tu IDE o editor favorito)
+
+
+Descripción de la aplicación
+----------------------------
+
+Vamos a construir una aplicación web para elaborar y consultar un repositorio
+de alimentos con datos acerca de sus propiedades dietéticas. Utilizaremos una
+base de datos para almacenar dichos datos que consistirá en una sola tabla con
+la siguiente información sobre alimentos:
+
+* El nombre del alimento,
+* la energía en kilocalorías ,
+* la cantidad de proteínas,
+* la cantidad hidratos de carbono  en gramos
+* la cantidad de fibra en gramos  y
+* la cantidad de grasa en gramos,
+
+todo ello por cada 100 gramos de alimento.
+
+Aunque se trata de una aplicación muy sencilla,  cuenta con los elementos
+suficientes para mostrar las características básicas de *Symfony2*.
+
+Utilizando algún cliente *MySQL* (*phpMyAdmin*, por ejemplo) crea la siguiente base
+de datos para almacenar los alimentos e introduce algunos registros para probar la 
+aplicación.
+
+.. code-block:: sql
+ 
+    CREATE TABLE `alimentos` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `nombre` varchar(255) NOT NULL,
+      `energia` decimal(10,0) NOT NULL,
+      `proteina` decimal(10,0) NOT NULL,
+      `hidratocarbono` decimal(10,0) NOT NULL,
+      `fibra` decimal(10,0) NOT NULL,
+      `grasatotal` decimal(10,0) NOT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
 
 ¿Qué es *Symfony2*?
 -------------------
@@ -183,27 +218,26 @@ podemos ejecutar la demo que viene incorporada en la distribución standard de
 distintos enlaces. Fíjate en la pinta que tienen las *URL's*. La demo muestra el
 código que genera las páginas de la propia demo. Fíjate en él detenidamente.
 Verás que muestra dos partes: el del controlador y el de la plantilla (*template*).
-¿Te suena?. Si no es así: ``GOTO unidad 2``.
+Es decir, dos elementos del patrón de diseño MVC (Modelo - Vista - Controlador).
 
 Ya has visto en acción la primera aplicación construida con *Symfony2*. Ahora 
 vamos a describir la manera en que *Symfony2* organiza el código.
 
-Como en el mini-framework que hemos construido en la unidad 2, *Symfony2* 
-también organiza los archivos en dos grupos: los que deben estar directamente 
+*Symfony2* organiza los archivos en dos grupos: los que deben estar directamente 
 accesibles al servidor web (*CSS's*, *Javascript*, imágenes y el controlador 
 frontal) y los que pueden ser incluidos desde el controlador frontal (librerías 
 *PHP* y ficheros de configuración). Los primeros viven en el directorio ``web``,
 y los segundos, según su funcionalidad, están repartidos entre los directorios
-``app`` , ``src`` y ``vendor``. Si has asimilado bien todo lo que se ha dicho en
-la unidad 2, estarás pensando que en una instalación en un entorno de
-producción, el **Document root** del servidor web (o del **Virtual host** 
-dedicado para la aplicación), debe coincidir con el directorio ``web``, y que
-el resto de directorios deben ubicarse fuera del **Document root**. Si es así,
-estás en lo cierto, y si no,  te sugerimos que antes de continuar con esta 
-unidad, repases la anterior.
+``app`` , ``src`` y ``vendor``. 
 
 .. note::
-   
+   En una instalación en un entorno de producción, el **Document root** del servidor
+   web (o del **Virtual host** dedicado para la aplicación), debe coincidir con el 
+   directorio ``web``, y el resto de directorios deben ubicarse fuera del
+   **Document root**. No obstante, en un entorno de desarrollo podemos relajarnos y,
+   para no andar afinando las configuraciones del servidor web, se puede ubicar todo
+   el código dentro del **Document root**.
+
    Para paliar el efecto de posibles despistes o malas prácticas por 
    desconocimiento, pereza y otras fatales causas, los directorios ``src`` y
    ``app``, contienen un fichero ``.htaccess`` que indica al servidor web que
@@ -244,8 +278,15 @@ Podemos ver 3 scripts *PHP*:
   los permisos de los ficheros del directorio ``app/config``, pues este script
   debe poder escribir allí.
 
-* ``app.php`` es el controlador frontal de la aplicación. No vamos a repetir
-  aquí que este concepto. Si no sabes de que hablamos, ``THEN GOTO Unidad 2``.
+* ``app.php`` es el controlador frontal de la aplicación, es decir, es el script
+  *PHP* por el que pasan todas las peticiones. Este script decide el flujo que debe
+  seguir la aplicación "observando" los parámetros que se hayan  pasado en cada
+  petición (*request*). Un conjunto de parámetros determinado se denomina ruta. 
+  Veamos algunos ejemplos para aclararlo: en
+  
+  ``http://tu.servidor.web/app.php/articulo/1``,
+
+  ``app.php``, es el controlador frontal y ``articulo/1`` es una ruta de la aplicación.
 
 * ``app_dev.php`` también es el controlador frontal de la aplicación. ¿Cómo?
   ¿dos controladores frontales? ¡eso no encaja con lo que hemos aprendido!.
@@ -443,11 +484,7 @@ En fin, lo que realmente debes saber:
 La aplicación *gestión de alimentos* en *Symfony2*
 --------------------------------------------------
 
-Sin más preámbulo vamos a comenzar a reimplementar con *Symfony2* la misma 
-aplicación que hemos desarrollado en la unidad 2 . Este ejercicio nos va a 
-permitir conocer los conceptos más básicos del framework, muchos de los cuales
-serán profundizados conforme avancemos en el curso.
-
+Y llegó el momento de ponerse a cocinar código.
 
 Generación de un *Bundle*
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -681,8 +718,7 @@ código  que nuestro recien horneado y esquelético *bundle*.
   el nombre cambiará según el nombre del *bundle*)
 
 * ``Controller`` es el directorio donde se deben colocar los controladores con las
-  distintas acciones del *bundle*. Recuerda el concepto de controlador y acción
-  que se estudió en la unidad 2. Lo lógico y recomendado, es crear una clase
+  distintas acciones del *bundle*. Lo lógico y recomendado, es crear una clase
   ``Controller`` por cada grupo de funcionalidades. Pero no es una exigencia, si
   quieres puedes colocar todas tus acciones en el mismo controlador. Cuando se
   genera un *bundle* se crea el controlador *DefaultController*.
@@ -769,47 +805,51 @@ que ver más con la construcción del modelo de la aplicación.
 Definición de las rutas del *bundle*
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-En la unidad anterior propusimos las siguientes rutas para acceder a las distintas
-partes de la aplicación:
+Ya hemos visto que *Symfony2* todas las peticiones a la aplicación se realizan a
+través de un script *PHP* que se llama controlador frontal (``app.php``).
+Este script "sabe" lo que debe devolver como respuesta al usuario "mirando" la *ruta*
+que lo acompaña en cada petición. 
 
-===================================================  =======================
-URL                                                  Acción
-===================================================  =======================
-http://localhost/alimentos/index.php?ctl=inicio      mostrar pantalla inicio
-http://localhost/alimentos/index.php?ctl=listar      listar alimentos
-http://localhost/alimentos/index.php?ctl=insertar    insertar un alimento
-http://localhost/alimentos/index.php?ctl=buscar      buscar alimentos
-http://localhost/alimentos/index.php?ctl=ver&id=x    ver el alimento *x*
-===================================================  =======================
+Cada ruta en *Symfony2* consiste en un conjunto de parámetros separados por el 
+caracter ``/``. Ejemplos de *URL's* con rutas de *Symfony2*  serían:
 
-Ahora vamos a volver a definirlas usando el potente sistema de rutas de *Symfony2*.
+.. code-block:: bash
 
-Comencemos con una observación. El usuario que utiliza el navegador "siente" que
-la *URL* que aparece en la barra de direcciones forma parte de la aplicación que
-está utilizando. Por tanto, cualquier *URL* llena de carácteres extraños y 
-demasiado larga redunda en una degradación estética. Más allá de estos problemas
-estéticos, cuando utilizamos *query strings* clásicas, es decir, del tipo:
-``?param1=val1&param2=val2&...&paramN=valN``, estamos dando información 
-innecesaria al usuario, ya que el nombre de los parámetros (``paramX``) es algo
-que tiene sentido únicamente para la aplicación en el servidor. Esta información
-extra, además de dar lugar a *URL's* horribles, supone un problema de seguridad,
-ya que el usuario podría utilizarlas para sacar conclusiones acerca de la
-aplicación que está en el servidor.
+   http://tu.servidor/app.php
+   http://tu.servidor/app.php/listar
+   http://tu.servidor/app.php/ver/4
 
-El sistema de *Routing* de *Symfony2* nos ofrece la posibilidad de utilizar 
-auténticas rutas para las *URL's* de nuestra aplicación, es decir, rutas que sólo
-utilizan el carácter ``/`` como separador. Además los nombre de los parámetros que
-reciben los datos en el servidor, no aparecen en las rutas. Únicamente aparece el
-valor de dichos parámetros. Las *URL's* así construidas identifican más 
-elegantemente los recursos del servidor, además de no dar más información de la 
-estrictamente necesaria.
+Las rutas correspondientes serían:
 
-Además, si utilizamos el módulo ``Rewrite`` del servidor web, podemos eliminar 
-de las *URL's* el nombre del controlador frontal (``app.php`` es el nombre que
-le da la distribución standard de *Symfony2* por defecto). En cuyo caso, además
-de mejorar el estilo de la *URL*, ocultamos al usuario información acerca del
-lenguaje de programación que estamos utilizando en el servidor. Nos quedarían 
-*URL's* de este tipo:
+.. code-block:: bash
+
+   /
+   /listar
+   /ver/4
+
+Es decir, los parámetros que siguen al controlador frontal. Esta forma de pasar 
+parámetros a través de la *URL* mejora en varios aspectos a la clásica *query string* 
+del tipo:
+
+.. code-block:: bash
+
+   ?param1=val1&param2=val2&...&paramN=valN
+
+En primer lugar el usuario que utiliza el navegador “siente” que la *URL* que aparece
+en la barra de direcciones forma parte de la aplicación que está utilizando. Por tanto,
+cualquier *URL* llena de carácteres extraños y demasiado larga redunda en una 
+degradación estética. En segundo lugar y más allá de cuestiones estéticas, cuando utilizamos query strings clásicas estamos dando información innecesaria al usuario, ya que
+el nombre de los parámetros (``paramX``) es algo que tiene sentido únicamente para la 
+aplicación en el servidor. Esta información extra, además de dar lugar a *URL’s* 
+horribles, supone un problema de seguridad, ya que el usuario podría utilizarlas para
+sacar conclusiones acerca de la aplicación y utilizarla para comprometerla.
+
+El aspecto de las *URL's* puede mejorar aún más si utilizamos el módulo ``Rewrite``
+del servidor web, ya que también podemos eliminar el nombre del controlador frontal
+(``app.php``). Así además de mejorar el estilo de la *URL*, ocultamos al usuario
+información acerca del lenguaje de programación que estamos utilizando en el servidor.
+
+Nos quedarían *URL's* de este tipo:
 
 .. code-block:: bash
 
@@ -837,12 +877,8 @@ lenguaje de programación que estamos utilizando en el servidor. Nos quedarían
    instalado el módulo ``Rewrite``, y permita el cambio de directivas a través
    de ficheros ``.htaccess``.
 
-Por otro lado, para definir la ruta no es necesario especificar la *URL* completa.
-De hecho, el sentido de ruta para *Symfony2* es la parte del *URL* a partir del
-nombre del controlador frontal. O si se ha eliminado este gracias al uso del
-módulo ``Rewrite``, la parte de la *URL* detrás del dominio.
-
-La tabla anterior, con las rutas de *Symfony2* quedaría así:
+La siguiente tabla muestra las rutas que definiremos en nuestra aplicación y la 
+acción que deben disparar.
 
 ========== =======================
 URL        Acción
@@ -970,13 +1006,13 @@ por ejemplo enviar  emails o  manipular una base de datos).
     es por que previamente, en la línea 5, se ha indicado en el archivo que se  
     va a utilizar la clase ``Controller`` de dicho espacio de nombre.
 
-El método ``indexAction()`` es una *acción* en el mismo sentido que ya explicamos
-en la unidad 2, es decir, es un método que está mapeado en una *URL* a través de
-una ruta (o tabla de rutas), es  decir de un fichero ``routing.yml``. En esencia
-es el mismo que  su homólogo de la unidad 2: define un  array asociativo con los
+El método ``indexAction()`` es una *acción* , es decir, un método que está mapeado
+en una *URL* a través de una ruta. Dichas rutas se definen en un fichero, que 
+utilizarás intensivamente cuando desarrollas aplicaciones con *Symfony2*, denominado
+``routing.yml``. La  acción ``indexAction()`` define un  array asociativo con los
 datos "crudos" (raw) ``mensaje`` y ``fecha``, y se los pasa a una plantilla para
 que  los  pinte. Esto  último  se  hace en  la  línea  17 utilizando  el  método
-``render``              de              la              clase              padre
+``render``  de  la  clase padre
 ``Symfony\Bundle\FrameworkBundle\Controller\Controller``. Este método recibe dos
 argumentos,  el  primero es  el  nombre  lógico de  la  plantilla  que se  desea
 utilizar,   y   el   segundo   es   un   array   asociativo   con   los   datos.
@@ -987,7 +1023,7 @@ El  método ``render``  es uno  de los  servicios disponibles  en el  framework 
 accesible       desde       cualquier       clase      que       derive       de
 ``Symfony\Bundle\FrameworkBundle\Controller\Controller``.  Es  un  servicio  que
 usaremos hasta  la saciedad. El  nombre lógico de  una plantilla, es  similar al
-nombre lógico  de un controlador;  esta compuesto por  el nombre del  bundle, el
+nombre lógico  de un controlador;  está compuesto por  el nombre del  bundle, el
 nombre   del  directorio   que   aloja   a  la   plantilla   en  el   directorio
 ``Resources/view`` (que suele  coincidir con el nombre del  controlador, en este
 caso ``Default``), y el nombre del  archivo que implementa la plantilla (en este
@@ -1012,10 +1048,7 @@ que   tenemos   que   hacer   es   crear  la   plantilla.   Edita   el   fichero
    
 Aunque *Symfony2*  permite el uso de  *PHP* como sistema de  plantillas, en este
 curso  utilizaremos  *Twig*,  que  es lo  recomendado  oficialmente.  El  código
-anterior es una plantilla  *twig*. Fíjate que es muy parecida a  su homóloga de
-la unidad 2 (``inicio.php``).  La información que se pinta y  el formato *HTML*
-son identicos. Pero hay  que reconocer que la plantilla *twig*  es mucho más
-limpia.
+anterior es una plantilla  *twig*.
 
 En  *twig*, el  contenido dinámico,  es  decir, los  datos "crudos"  que le  son
 pasados desde el controlador (segundo argumento del método ``render`` en la 
@@ -1117,10 +1150,25 @@ Decoración de la plantilla con un layout
 
 Te habrás dado cuenta que hemos pintado un bloque *HTML* incompleto. Si no te 
 has percatado de ello mira el código fuente *HTML* que llega al navegador.
-Nos falta someter a la plantilla al proceso de decoración que hemos estudiado
-en la unidad 2, mediante el cual se le añade funcionalidad. En el caso de la 
-aplicación de *gestión de alimentos* hay que añadir la cabecera con el menú, 
-el pie de página y los estilos.
+Nos falta someter a la plantilla al proceso de decoración, mediante el cual se le
+añade funcionalidad. En el caso de la aplicación de *gestión de alimentos* hay que
+añadir la cabecera con el menú, el pie de página y los estilos.
+
+.. note::
+   
+   Sobre el proceso de decoración:
+
+   En una aplicación web,  muchas de las páginas tienen elementos comunes. Por
+   ejemplo, un caso típico es la cabecera (donde se coloca el mensaje de bienvenida),
+   el menú y el pie de página. Este hecho, y la aplicación del conocido principio de
+   buenas prácticas de programación *DRY* (*Don't Repeat Yourself*, No Te Repitas),
+   lleva a que cualquier sistema de plantillas que se utilice para implementar la
+   vista utilice un conocido patrón de diseño: El *Decorator*, o Decorador.
+   Aplicado a la generación de vistas la solución que ofrece dicho patrón es la de
+   añadir funcionalidad adicional a las plantillas. Por ejemplo, añadir el menú y el
+   pie de página a las plantillas que lo requieran, de manera que dichos elementos
+   puedan reutilizarse en distintas plantillas. Literalmente se trata de *decorar*
+   las plantillas con elementos adicionales reutilizables.
 
 El sistema de plantillas *twig*, está provisto de un mecanismo de herencia gracias
 al cual la decoración de plantillas resulta de una flexibilidad y versatilidad
@@ -1319,8 +1367,7 @@ el bloque ``contenido`` de esta última. Quedaría así:
 
    {% endblock %}
 
-Vuelve a probar la página. Ya sólo nos falta incorporarle estilos *CSS's* para
-que tenga la misma pinta que en la unidad 2.
+Vuelve a probar la página. Ya sólo nos falta incorporarle estilos *CSS's*.
 
 Instalación de los *assets* de un *bundle*
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1344,10 +1391,52 @@ Por otro lado en un *bundle* los *assets* deben ser ubicados en el directorio
        ├── images
        └── js
 
-Se ha reservado un directorio para cada tipo de *asset*. Copia el archivo
-``estilos.css`` de la unidad 2  en el directorio que le corresponde;
-``Resources/public/css``. Para que el servidor web la pueda
-cargar, se utiliza el siguiente comando de consola:
+Se ha reservado un directorio para cada tipo de *asset*. Copia el siguiente código
+*CSS's* en el archivo ``Resources/public/css`` del *bundle*.
+
+.. code-block:: css
+   
+    body {
+      padding-left: 11em;
+      font-family: Georgia, "Times New Roman",
+            Times, serif;
+      color: purple;
+      background-color: #d8da3d }
+    ul.navbar {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      position: absolute;
+      top: 2em;
+      left: 1em;
+      width: 9em }
+    h1 {
+      font-family: Helvetica, Geneva, Arial,
+            SunSans-Regular, sans-serif }
+    ul.navbar li {
+      background: white;
+      margin: 0.5em 0;
+      padding: 0.3em;
+      border-right: 1em solid black }
+    ul.navbar a {
+      text-decoration: none }
+    a:link {
+      color: blue }
+    a:visited {
+      color: purple }
+    address {
+      margin-top: 1em;
+      padding-top: 1em;
+      border-top: thin dotted }
+    #contenido {
+      display: block;
+      margin: auto;
+      width: auto;
+      min-height:400px;
+    }
+
+
+Para que el servidor web la pueda cargar, se utiliza el siguiente comando de consola:
 
 .. code-block:: bash
   
@@ -1413,8 +1502,7 @@ Implementamos el resto de la aplicación
 Siguiendo estos tres pasos: enrutar, crear código de la acción (controlador) y
 crear la plantilla, podemos completar lo que nos falta de la aplicación. No 
 obstante, en las acciones que faltan, se necesita acceder a la base de datos
-para recuperar, modificar y crear alimentos. Recuerda que esto se hacía en la
-unidad 2 utilizando una clase denominada ``Model``. La distribución standard de
+para recuperar, modificar y crear alimentos. La distribución standard de
 *Symfony2*  proporciona un potente servicio para el acceso a los datos
 persistentes, es decir, los que se almacenan en algún tipo de base de datos. Pero
 no obliga a utilizarlo. No solo eso, tampoco forma parte del núcleo de
@@ -1425,22 +1513,15 @@ ya que no dice nada sobre como debes construir tu modelo.
 
 Aunque lo recomendable es utilizar *Doctrine2* (que es el servicio de 
 persistencia que viene incorporado en la distribución standard), o *Propel*, 
-en esta unidad no los vamos a utilizar por las siguientes razones:
-
-1. Ya llevamos muchos conceptos introducidos y no queremos sobrecargar la 
-   unidad. Más adelante estudiaremos y usaremos *Doctrine2*.
-
-2. Queremos ilustrar como podemos construir el modelo a nuestro antojo, y como
-   podemos reutilizar código fácilmente cuando lo tenemos bien organizado bajo
-   las pautas del patrón *MVC*.
+en este tutorial no los vamos a utilizar por que ya llevamos muchos conceptos
+introducidos y no queremos sobrecargarlo. Además queremos ilustrar como podemos 
+construir el modelo a nuestro antojo.
 
 Así pues, antes de implentar el resto de las acciones que componen la
 aplicación, vamos a elaborar el modelo.
 
 Crea un directorio denominado ``Model`` (el nombre puede ser cualquiera), y 
-copia ahí el fichero ``Model.php`` de la unidad 2. Incorpora la clase ``Model`` 
-al espacio de nombres del *bundle* añadiendo al principio del fichero:
-``namespace Jazzyweb\AulasMentor\AlimentosBundle\Model``. Nos quedaría así:
+crea ahí un fichero ``Model.php`` con el siguiente código: 
 
 ``src/Jazzyweb/AulasMentor/AlimentosBundle/Model/Model.php``
 
@@ -1544,10 +1625,9 @@ al espacio de nombres del *bundle* añadiendo al principio del fichero:
 
     }
 
-El próximo paso es adaptar el código del controlador de la unidad 2. Se trata
-de añadir el sufijo ``Action`` a todas las acciones, y en utilizar el servicio
-de renderizado de *Symfony2* para invocar a las plantillas. El código del
-controlador ``DefaultController`` quedaría así:
+El próximo paso es completar el código del controlador con el resto de las acciones que
+se han mapeado en las rutas definidas anteriormente. El código del controlador
+``DefaultController`` quedaría así:
 
 ``src/Jazzyweb/AulasMentor/AlimentosBundle/Controller/DefaultController.php``
 
@@ -1681,11 +1761,9 @@ referirnos a ella por su nombre completo,
 directiva ``use`` de *PHP 5.3* en dicho fichero. Así podemos utilizar la clase
 ``Model`` directamente en el controlador.
 
-Crea el directorio ``src/Jazzyweb/AulasMentor/AlimentosBundle/Config``, y coloca
-ahí el fichero ``Config.php`` de la unidad 2. Añádelo al espacio de nombres
-``Jazzyweb\AulasMentor\AlimentosBundle\Config``. Este fichero es usado por el
-controlador anterior para inicializar el modelo (el objeto ``Model``). En la línea7
-puedes ver que hemos añadido el espacio de nombre de esta clase.
+En la clase ``Model`` puedes observar que,  para el acceso a la base de datos, se hace
+referencia a unos parámetros de configuración a través de la clase estática ``Config``.
+Crea dicha clase en el fichero ``src/Jazzyweb/AulasMentor/AlimentosBundle/Config/Config.php``, con el siguiente código:
 
 ``src/Jazzyweb/AulasMentor/AlimentosBundle/Config/Config.php``
 
@@ -1704,6 +1782,11 @@ puedes ver que hemos añadido el espacio de nombre de esta clase.
         static public $mvc_vis_css     = "estilo.css";
     }
     
+Esta forma de especificar los parámetros de configuración no es la más "symfónica", 
+pero es suficiente para los propósitos de este tutorial. En otro tutorial explicaremos
+como usar la inyección de dependencias para declarar los parámetros en el *Symfony2
+way*.
+
 Como puedes ver hemos comenzado por el 2º paso del flujo básico de desarrollo
 de páginas con *Symfony2* es decir, escribir el controlador. En realidad el 
 orden no importa mucho; al final hay que tener los tres pasos resueltos antes
@@ -1823,8 +1906,7 @@ de *PHP*.
    suficiente para generar un código de calidad. Es el programador quien, conociendo
    y aplicando las buenas prácticas de programación, produce un buen código.
 
-Y ahora a por las plantillas. Igual que hemos hecho con las acciones del
-controlador, adaptaremos las plantillas de la unidad 2 al sistema *twig*.
+Y ahora a por las plantillas. 
 
 ``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/verAlimento.html.twig``
 

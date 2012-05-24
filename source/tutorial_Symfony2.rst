@@ -174,7 +174,7 @@ etcétera), la forma más fácil de dar dichos permisos es:
 
 .. note:: 
 
-   Durante toda la unidad suponemos que has hecho esta operación directamente en 
+   Durante toda el tutorial suponemos que has hecho esta operación directamente en 
    el *Document root* del servidor web, de manera que tendrá la siguiente 
    estructura de directorios:
 
@@ -515,8 +515,8 @@ Ilustremos esto con varios ejemplos de nombres de *bundles* válidos:
 .. code-block:: bash
 
    AulasMentor/AlimentosBundle
-   AulasMentor/Unidad3/AlimentosBundle
-   AulasMentor/CursoSf2/Unidad3/AlimentosBundle
+   AulasMentor/Tutorial/AlimentosBundle
+   AulasMentor/CursoSf2/Tutorial/AlimentosBundle
    Jazzyweb/AlulasMentor/AlimentosBundle
 
 Nos quedaremos con el último de los nombres para el *bundle* que vamos a 
@@ -655,7 +655,7 @@ acoplar un bundle al framework hay que :
 Anatomía de un *Bundle*
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Si has seguido las indicaciones que hemos dado en esta unidad, debes tener en tu
+Si has seguido las indicaciones que hemos dado en este tutorial, debes tener en tu
 directorio ``src`` dos directorios: ``Jazzyweb`` y ``Acme`` . El primero se 
 corresponde con el *bundle* que acabamos de crear, y el segundo es un ejemplo
 que viene de serie con la distribución standard de *Symfony2* y que contiene el
@@ -2131,18 +2131,16 @@ repetición de código innecesariamente.
 Y con esto ya tenemos la aplicación de gestión de alimentos terminada y 
 construida en *Symfony2*. Aún puede hacerse de un modo más symfónico, 
 utilizando los servicios de persistencia de datos (*Doctrine*), de creación
-de formularios y de validación de datos. Pero la intención de esta unidad es
+de formularios y de validación de datos. Pero la intención de este tutorial es
 mostrar los elementos básicos para la creación de páginas en *Symfony2*, y por
-tanto vamos a dar por buena la aplicación tal y como está. En las próximas
-unidades tendremos ocasión de estudiar estos servicios y de ilustrarlos con 
-el desarrollo de una aplicación más completa y compleja.
+tanto vamos a dar por buena la aplicación tal y como está.
 
 Únicamente faltaría usar la función ``path()`` de *twig* para completar los
 enlaces de los menús. Pero eso vamos a dejar que lo hagas tú.
 
 
-La unidad en chuletas
----------------------
+El tutorial en chuletas
+-----------------------
 
 Generar un *bundle*
 ^^^^^^^^^^^^^^^^^^^

@@ -5,7 +5,7 @@ Tutorial: Symfony2 a vista de pájaro
 
 El objetivo este tutorial es ofrecer una visión panorámica del framework PHP para el
 desarrollo de aplicaciones web *Symfony2*. El desarrollo de una sencilla aplicación
-aplicación web servirá como elemento vertebrador de este tutorial.
+aplicación web servirá como elemento vertebrador de este documento.
 
 Para seguir el tutorial necesitarás un entorno con:
 
@@ -75,11 +75,11 @@ cuestión. *Symfony2* se presenta así como una  especie de *Lego* en el mundo d
 desarrollo en *PHP*.
 
 Con estos componentes,  uno de los problemas  que se puede resolver es  el de la
-creación de  un framework de  desarrollo. De hecho lo  primero que han  hecho la
-gente  de *Symfony2*  una vez  que  ha tenido  listos los  componentes, ha  sido
-"engancharlos" para  construir lo que  se conoce como *Distribución  Standard de
-Symfony2*,  o más  brevemente como  *Symfony2* sin  más. Y  es precisamente  del
-estudio de esta distribución de lo que trata este curso.
+creación de  un framework de  desarrollo web. De hecho, uno de los primeros
+productos que se han construido con estos componentes ha sido el framework de
+desarrollo conocido como *Distribución  Standard de Symfony2*,  o más  brevemente
+*Symfony2* sin  más. Y  es precisamente  del estudio de esta distribución de lo que
+trata este tutorial.
 
 Por ello, el término  *Symfony2* puede referirse a:
 
@@ -94,15 +94,15 @@ Los componentes de *Symfony2*, se están  utilizando para otros proyectos [1]_, 
 su uso  aumentará cuando dispongan  de una  documentación tan exhaustiva  y bien
 elaborada como la  que cuenta en estos momentos el  framework *Symfony2*. Es muy
 probable (ojalá) que cuando este curso  vea la luz esta situación haya cambiado [2]_.
-Entonces, a lo mejor sería interesante elaborar otro curso sobre los componentes
-de *Symfony2*, pero sería eso: otro  curso. Los componentes son los elementos de
+Entonces, a lo mejor sería interesante elaborar otro tutorial sobre los componentes
+de *Symfony2*, pero sería eso: otro  tutorial. Los componentes son los elementos de
 bajo  nivel del  framework *Symfony2*,  y para  utilizar dicho  framework no  es
-necesario                                                            conocerlos.
+necesario conocerlos.
 
 De todas formas vamos a aprovechar este apartado para enumerar los componentes
 de *Symfony2*, dando una breve descripción de su funcionalidad. Pero, repetimos:
 no es necesario conocerlos para utilizar el framework, que es de lo que trata este
-curso. Damos esta información con el fin de calmar al curioso y de aclarar las 
+tutorial. Damos esta información con el fin de calmar al curioso y de aclarar las 
 posibles confusiones que se dan al hablar de *Symfony2* entre los componentes y el
 framework. Obviamente, el contexto aclarará de que se habla en cada ocasión.
 
@@ -289,7 +289,7 @@ Podemos ver 3 scripts *PHP*:
   ``app.php``, es el controlador frontal y ``articulo/1`` es una ruta de la aplicación.
 
 * ``app_dev.php`` también es el controlador frontal de la aplicación. ¿Cómo?
-  ¿dos controladores frontales? ¡eso no encaja con lo que hemos aprendido!.
+  ¿dos controladores frontales? ¡eso no parece encajar con lo que acabamos de decir!.
   Bueno tranquilos, tiene su explicación. Se trata de lo que se denomina en 
   *Symfony2* el controlador frontal de **desarrollo**. En principio pinta lo
   mismo que ``app.php``, pero le añade una barra de depuración que ofrece
@@ -349,7 +349,7 @@ línea 9 del ``web/app.php``:
    ...
 
 El primer argumento decide el entorno de ejecución que se utilizará. ¿Y para que
-sirve esto?. *Symfony2* utiliza este datos para saber qué ficheros de 
+sirve esto?. *Symfony2* utiliza este dato para saber qué ficheros de 
 configuración debe cargar. Supongamos, por ejemplo, que se especifica ``dev`` como
 entorno de ejecución. Entonces, si existe el fichero ``config_dev.yml`` lo cargará,
 y si no es así cargará ``config.yml``. Lo mismo ocurre con los ficheros 
@@ -658,7 +658,7 @@ Anatomía de un *Bundle*
 Si has seguido las indicaciones que hemos dado en esta unidad, debes tener en tu
 directorio ``src`` dos directorios: ``Jazzyweb`` y ``Acme`` . El primero se 
 corresponde con el *bundle* que acabamos de crear, y el segundo es un ejemplo
-que viene de serie con la distribución standard de *Symfony* y que contiene el
+que viene de serie con la distribución standard de *Symfony2* y que contiene el
 código de la demo con la que has jugado hace un rato. Vamos a utilizar este 
 último para realizar la *disección* de un *bundle*, ya que está más rellenito de
 código  que nuestro recien horneado y esquelético *bundle*. 
@@ -718,7 +718,7 @@ código  que nuestro recien horneado y esquelético *bundle*.
   el nombre cambiará según el nombre del *bundle*)
 
 * ``Controller`` es el directorio donde se deben colocar los controladores con las
-  distintas acciones del *bundle*. Lo lógico y recomendado, es crear una clase
+  distintas acciones del *bundle*. Las acciones son las funciones (o métodos)  Lo lógico y recomendado, es crear una clase
   ``Controller`` por cada grupo de funcionalidades. Pero no es una exigencia, si
   quieres puedes colocar todas tus acciones en el mismo controlador. Cuando se
   genera un *bundle* se crea el controlador *DefaultController*.
@@ -728,9 +728,9 @@ código  que nuestro recien horneado y esquelético *bundle*.
   potente patrón de diseño mediante el que se facilita la creación y configuración
   de objetos que prestan servicios en una aplicación gracias a la gestión 
   automática de sus dependencias. Contribuye a crear un código más desacoplado y
-  coherente. La unidad 4 se ha dedicado exclusivamente a presentar este concepto.
-  Aunque no es un patrón complicado, es dificil de explicar con precisión y 
-  claridad. 
+  coherente. Presentaremos este concepto en un tutorial dedicado en exclusiva a
+  la Inyección de Dependencias en *Symfony2*. Aunque no es un patrón complicado, es
+  dificil de explicar con precisión y  claridad. 
   
   *Symfony2* nos ofrece dos maneras de "cargar" la configuración de las 
   dependencias y los servicios creados. Una más sencilla y directa, y otra más
@@ -794,8 +794,6 @@ La creación de páginas web con *Symfony2* involucra tres pasos:
    utilizar *Twig* como sistema de plantillas, aunque también se puede utilizar
    *PHP*.
 
-Como puedes comprobar el procedimiento no es muy diferente al que hemos estudiado
-en la unidad anterior. 
 
 Estos pasos son, por supuesto, una guía general y mínima que debemos seguir en
 la creación de las páginas de nuestra aplicación. No obstante, en muchos casos
@@ -805,7 +803,7 @@ que ver más con la construcción del modelo de la aplicación.
 Definición de las rutas del *bundle*
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ya hemos visto que *Symfony2* todas las peticiones a la aplicación se realizan a
+Ya hemos visto que en *Symfony2* todas las peticiones a la aplicación se realizan a
 través de un script *PHP* que se llama controlador frontal (``app.php``).
 Este script "sabe" lo que debe devolver como respuesta al usuario "mirando" la *ruta*
 que lo acompaña en cada petición. 
@@ -1047,7 +1045,7 @@ que   tenemos   que   hacer   es   crear  la   plantilla.   Edita   el   fichero
    {{mensaje}}
    
 Aunque *Symfony2*  permite el uso de  *PHP* como sistema de  plantillas, en este
-curso  utilizaremos  *Twig*,  que  es lo  recomendado  oficialmente.  El  código
+tutorial  utilizaremos  *Twig*,  que  es lo  recomendado  oficialmente.  El  código
 anterior es una plantilla  *twig*.
 
 En  *twig*, el  contenido dinámico,  es  decir, los  datos "crudos"  que le  son
@@ -1832,7 +1830,7 @@ El archivo ``src/Jazzyweb/AulasMentor/Resources/config/routing.yml`` queda así:
 La última ruta (``JAMAB_ver``) utiliza una funcionalidad muy interesante del
 sistema de *Routing* de *Symfony2* que se utiliza continuamente. Se trata de
 introducir en la propia ruta los parámetros que se pasarán por *GET* al servidor
-web. Los valores encerrados entre llaves, en nuestro caso ``{id}}``, se 
+web. Los valores encerrados entre llaves, en nuestro caso ``{id}``, se 
 denominan *placeholders*. El sistema de *Routing* parsea las *URL's* 
 que coincidan con la ruta y asigna el valor que venga en la posición de cada 
 *placeholder* a una variable denominada con el nombre especificado entre las
@@ -2298,6 +2296,12 @@ Estructura básica de una ruta
 .. [2] Algunos de los componentes ya cuentan con documentación: http://symfony.com/doc/current/components
 
 .. [3] https://github.com/symfony
+
+.. [4] Los especios de nombres son una nueva característica de PHP 5.3. Gracias a
+       ellos se evitan problemas comunes en aplicaciones grandes como la colisión
+       de nombres de clases. Si no los conoces deberías echarle un vistazo a 
+       http://php.net/manual/en/language.namespaces.php, ya que *Symfony2* hace
+       un uso intensivo de los ellos.
 
 .. _ClassLoader: http://symfony.com/doc/current/components/class_loader.html
 .. _Console: http://symfony.com/doc/current/components/console.html

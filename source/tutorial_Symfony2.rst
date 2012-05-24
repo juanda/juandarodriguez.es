@@ -3,6 +3,10 @@
 Tutorial: Symfony2 a vista de pájaro
 ====================================
 
+.. note:: 
+
+   Este tutorial es la adaptación de la unidad 3 del curso `Desarrollo de aplicaciones web con Symfony2`_ del proyecto `Aula Mentor`_:
+
 El objetivo este tutorial es ofrecer una visión panorámica del framework PHP para el
 desarrollo de aplicaciones web *Symfony2*. El desarrollo de una sencilla aplicación
 aplicación web servirá como elemento vertebrador de este documento.
@@ -2314,7 +2318,8 @@ Estructura básica de una ruta
 .. _Routing: http://symfony.com/doc/current/components/routing.html
 .. _Templating: http://symfony.com/doc/current/components/templating.html
 .. _Yaml: http://symfony.com/doc/current/components/yaml.html
-
+.. _`Desarrollo de aplicaciones web con Symfony2`: https://centrovirtual.educacion.es/Symfony14/mentor.php/areasCursosWeb/mostrarInfoCurso/idCurso/958
+.. _`Aula Mentor`: http://www.aulamentor.es
 ------------
 
 .. raw:: html

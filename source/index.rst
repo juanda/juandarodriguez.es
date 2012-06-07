@@ -14,6 +14,7 @@ Entradas en blog
    
    parameter_holders_en_symfony14
    sphinx_with_wordpress
+   aplicaciones_web
 
 Tutoriales
 ----------
@@ -22,6 +23,7 @@ Tutoriales
    :maxdepth: 2
 
    tutorial_Symfony2
+   tutorial_inyeccion_dependencias_con_symfony2.rst
 
 Indices and tables
 ==================

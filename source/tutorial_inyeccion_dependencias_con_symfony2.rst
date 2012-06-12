@@ -248,7 +248,7 @@ servicios que es capaz de manipular. Y es lo que haremos.
    través de su constructor.
 
 Todos los *bundles* construidos con el generador de *bundles* de *Symfony2*, 
-proporcionan el fichero ``Resources/config/servicios.yml``. Échale un vistazo. 
+proporcionan el fichero ``Resources/config/services.yml``. Échale un vistazo. 
 Trae algunas líneas comentadas para que sirvan como ejemplo. En este fichero se
 describen los servicios del *bundle* y sus dependencias. El fichero tiene dos 
 secciones; ``parameters`` y ``services``. La primera sirve para declarar 
@@ -443,11 +443,15 @@ código de la clase ``DefaultController`` quedaría así:
 
 Observa (líneas 22, 43, 75 y 88) que ya no tenemos que pasar parámetros de
 configuración para obtener una instancia de la clase ``Model``, puesto que el 
-Contenedor de Servicios sabe hacerlo y lo hace por nosostros. Como consecuencia,
+Contenedor de Servicios sabe hacerlo y lo hace por nosotros. Como consecuencia,
 ya no es necesario la clase ``Jazzyweb\AulasMentor\AlimentosBundle\Config\Config``,
 puesto que los parámetros de configuración han sido definidos en el archivo
 ``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/services.yml``. Así
 que puedes borrarla (¡menos mal! era una clase que "chirriaba" demasiado).
+
+.. note::
+
+   Si no has seguido el tutorial http://juandarodriguez.es/tutoriales/tutorial-de-symfony2/, echa un vistazo al código del ``DefaultController.php`` que se encuentra en el apartado: http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2/#implementamos-el-resto-de-la-aplicacion para comprobar lo que se dice en el apartado anterior.
 
 ¿Y qué hemos ganado con todo esto?
 ----------------------------------
@@ -779,7 +783,7 @@ esto es, nos referimos a servicios de base da datos, de correo, etcétera).
 
 Hemos utilizado una cuenta de *Gmail* para enviar emails. Para configurarla es
 preciso añadir dos parámetros más: el tipo de encriptación y el modo de 
-autenticación (esto lo dice la documentación de *Gmail). Por otro lado, en la
+autenticación (esto lo dice la documentación de *Gmail*). Por otro lado, en la
 documentación oficial de *Symfony2* se dice que estos datos son mapeados por
 *swiftmailer* a través de los parámetros ``encryption`` y ``auth_mode``. La 
 sección ``swiftmailer`` del archivo de configuración global ``config.yml`` queda
@@ -817,10 +821,6 @@ Y la declaración de los parámetros:
 
 Y ya tenemos el servicio de *mailing* bien configurado y listo para ser usado.
 Y ahora toca probarlo. Construiremos una ruta y una acción asociada para ello.
-Estaría bien que intentases realizar tu mismo esta prueba sin mirar lo que viene
-a continuación hasta que no lo hayas conseguido o hasta que te hayas desesperado.
-Si vas asimilando todo lo que hasta ahora hemos estudiado en el curso, deberías 
-ser capaz de hacerlo.
 
 En ``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml``
 añadimos la ruta:
@@ -934,8 +934,8 @@ En las próximas unidades estudiaremos los servicios más importantes que ofrece
 que ampliar el framework con nuevas funcionalidades. Y esto, si queremos hacerlo
 bien, debemos hacerlo usando la inyección de dependencias y los servicios.
 
-La unidad en chuletas
----------------------
+El tutorial en chuletas
+-----------------------
 
 * *Servicio*. Un tipo de objetos que realizan algún tipo de tarea “global” en el 
   sistema.

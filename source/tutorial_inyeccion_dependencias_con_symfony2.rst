@@ -48,7 +48,7 @@ que construyamos nuestro sistema completo.
 
 .. _inyeccion:
 
-Primer paso: injección de dependencias
+Primer paso: inyección de dependencias
 --------------------------------------
 
 El primer paso en la aplicación del patrón consiste en diseñar los servicios
@@ -457,7 +457,7 @@ que puedes borrarla (¡menos mal! era una clase que "chirriaba" demasiado).
 ----------------------------------
 
 Es muy probable que estes preguntándote qué hemos ganado con todo esto de la 
-injección de dependencias. Y es normal, por que el concepto del Contenedor de
+inyección de dependencias. Y es normal, por que el concepto del Contenedor de
 Servicios es una nueva forma de entender la programación orientada a objetos.
 
 En esta sección vamos a indicar algunas de las cosas que hemos ganado al convertir
@@ -590,7 +590,7 @@ construir *tests* con *PHPUnit* que comprueben la funcionalidad del controlador
 ``DefaultController`` sin necesidad de "contaminar" las pruebas con posibles fallos
 con la conexión a la base de datos. Todo esto es posible gracias al uso de objetos
 (servicios) absolutamente desacoplados y que son "juntados" entre sí mediante la 
-injección de dependencias.
+inyección de dependencias.
 
 Imáginemos ahora que, después de que nuestra aplicación de gestión de alimentos ha
 crecido un montón, por "exigencias del guíon" nos han migrado los datos a un 
@@ -874,7 +874,7 @@ servicio de *mailing* y todo sigue funcionando. Que ahora resulta que no quieres
 enviar mails mientras estás haciendo pruebas. Añades a la configuración de 
 *swiftmailer* el parámetro: ``disable_delivery:  true`` y se deshabilita el envío.
 Son posibles situaciones prácticas que se te pueden dar en el desarrollo de tus
-aplicaciones y que, gracias a la injección de dependencias, se resuelven de una
+aplicaciones y que, gracias a la inyección de dependencias, se resuelven de una
 manera muy sencilla y segura en el sentido de que realizas grandes cambios y todo
 sigue funcionando, nada se rompe.
 

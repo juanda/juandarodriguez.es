@@ -796,11 +796,8 @@ así:
     ...
     swiftmailer:
         transport:  %mailer_transport%
-        host:       %mailer_host%
         username:   %mailer_user%
         password:   %mailer_password%
-        encryption: %mailer_encryption%
-        auth_mode:  %mailer_auth_mode%
     ...
 
 Y la declaración de los parámetros:
@@ -811,12 +808,9 @@ Y la declaración de los parámetros:
    :linenos:
     
     ...
-    mailer_transport  = smtp
-    mailer_host       = smtp.gmail.com
+    mailer_transport  = gmail
     mailer_user       = tuusername
     mailer_password   = tupassword
-    mailer_encryption = ssl
-    mailer_auth_mode  = login
     ...
 
 Y ya tenemos el servicio de *mailing* bien configurado y listo para ser usado.

@@ -521,7 +521,7 @@ Ilustremos esto con varios ejemplos de nombres de *bundles* válidos:
    AulasMentor/AlimentosBundle
    AulasMentor/Tutorial/AlimentosBundle
    AulasMentor/CursoSf2/Tutorial/AlimentosBundle
-   Jazzyweb/AlulasMentor/AlimentosBundle
+   Jazzyweb/AulasMentor/AlimentosBundle
 
 Nos quedaremos con el último de los nombres para el *bundle* que vamos a 
 construir. Con este nombre se quiere expresar algo así como que el *bundle*
@@ -550,7 +550,7 @@ la estructura de directorios computada desde ``src``.
 
 Presiona ``enter`` para aceptar la sugerencia. Cuando termines de generar el 
 *bundle* verás como se ha creado en ``src`` el directorio 
-``Jazzyweb/AlulasMentor/AlimentosBundle``, es decir un directorio que tiene la
+``Jazzyweb/AulasMentor/AlimentosBundle``, es decir un directorio que tiene la
 misma estructura que el espacio de nombres que hemos asignado al *bundle*. Esto
 es lo que se quiere decir de manera genérica en el párrafo anterior.
 
@@ -1221,7 +1221,7 @@ como plantilla básica de casi cualquier aplicación web.
 Vamos a modificar nuestra plantilla ``index.html.twig`` para que la herede (o para
 que la extienda, son dos maneras de decir lo mismo):
 
-``src/Jazzyweb/AulasMentor/Resources/view/Default/index.twig.html``
+``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/index.twig.html``
 
 .. code-block:: html+jinja
    :linenos:
@@ -1244,7 +1244,7 @@ contenido del bloque ``body`` con las líneas 5-7.
 Si además queremos modificar el bloque ``title``, no tenemos más que añadirlo
 en nuestra plantilla ``index.html.twig``: 
 
-``src/Jazzyweb/AulasMentor/Resources/view/Default/index.twig.html``
+``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/index.twig.html``
 
 .. code-block:: html+jinja
    :linenos:
@@ -1307,7 +1307,7 @@ de exponer. Creamos la plantilla genéral
 ``JazzywebAulasMentorAlimentosBundle::layout.html.twig``. Según la lógica de los
 nombres lógicos, esta se debe ubicar en:
 
-``src/Jazzyweb/AulasMentor/Resources/view/layout.twig.html``
+``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/layout.twig.html``
 
 .. code-block:: html+jinja
    :linenos:
@@ -1807,7 +1807,7 @@ URL        Acción
 /ver/x     ver el alimento *x*
 ========== =======================
 
-El archivo ``src/Jazzyweb/AulasMentor/Resources/config/routing.yml`` queda así:
+El archivo ``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml`` queda así:
 
 .. code-block:: yaml
    

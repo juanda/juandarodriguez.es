@@ -218,268 +218,173 @@ Por último, en este directorio tan "denso", encontramos la navaja suiza de [i]S
 
 [code] php app/console[/code]
 
-##################################################
-
 [h4]El directorio ``vendor``[/h4]
 
 Aquí se aloja todo el código funcional que no es tuyo. Es lo que tradicionalmente
 se conoce como librerías de terceros. Entre otras cosas, el directorio contiene
-los componentes de *Symfony2*, el ORM *Doctrine2* y el sistema de plantillas
-*twig*. Cuando amplies tu aplicación con nuevos *bundles* de terceros instalados 
-automáticamente con la aplicación ``bin/vendors``, será aquí donde se ubique el
+los componentes de [i]Symfony2[/i], el ORM [i]Doctrine2[/i] y el sistema de plantillas
+[i]twig[/i]. Cuando amplies tu aplicación con nuevos [i]bundles[/i] de terceros instalados 
+automáticamente con la aplicación [i]bin/vendors[/i], será aquí donde se ubique el
 código.
 
-El directorio ``src``
-^^^^^^^^^^^^^^^^^^^^^
+[h4]El directorio [i]src[/i][/h4]
 
-Es el directorio donde colocarás tu código. Más concretamente: tus *bundles*.
+Es el directorio donde colocarás tu código. Más concretamente: tus [i]bundles[/i].
 A base de utilizar este palabro acabarás por asimilarlo antes de que te lo
 expliquemos :-).
 
-El directorio ``bin``
-^^^^^^^^^^^^^^^^^^^^^
+[h4]El directorio [i]bin[/i][/h4]
 
-El nombre de este directorio es un clásico en el mundo *UNIX*. En él se colocan
-archivos ejecutables. La distribución standard solo trae el ejecutable ``vendors``
-que se utiliza, en combinación con el fichero ``deps`` (dependencias), para 
-instalar componentes de terceros (*vendors*).
+El nombre de este directorio es un clásico en el mundo [i]UNIX[/i]. En él se colocan
+archivos ejecutables. La distribución standard solo trae el ejecutable [i]vendors[/i]
+que se utiliza, en combinación con el fichero [i]deps[/i] (dependencias), para 
+instalar componentes de terceros ([i]vendors[/i]).
 
+Y con esto acabamos la descripción de los directorios de [i]Symfony2[/i]. Ha llegado
+el momento de hablar de los [i]bundles[/i], esos grandes desconocidos (¡por ahora!).
 
-Y con esto acabamos la descripción de los directorios de *Symfony2*. Ha llegado
-el momento de hablar de los *bundles*, esos grandes desconocidos (¡por ahora!).
+[h4]Los Bundles: Plugins de primera clase[/h4]
 
-.. _bundles:
-
-Los Bundles: Plugins de primera clase
--------------------------------------
-
-Si los creadores de *Symfony2* hubieran elegido la palabra *plugin* en lugar de
-*bundle*, es probable que te hubieses hecho una idea más concreta de lo que es
-un *bundle*. Pues bien, por lo pronto, piensa que un *bundle* es un *plugin*, por
+Si los creadores de [i]Symfony2[/i] hubieran elegido la palabra [i]plugin[/i] en lugar de
+[i]bundle[/i], es probable que te hubieses hecho una idea más concreta de lo que es
+un [i]bundle[/i]. Pues bien, por lo pronto, piensa que un [i]bundle[/i] es un [i]plugin[/i], por
 que no es ni más ni menos que eso.
 
 Cualquier framework que se precie debe ofrecer un mecanismo de extensión que 
 permita ampliar la aplicación sin compromenter la escalabilidad. Para ello las
 piezas que se añaden al sistema deben ser bloques prácticamente autónomos y con
-una interfaz sencilla para engancharlos (*to plug*, en inglés) al sistema. A estos
-bloques se les conoce a lo largo y ancho de la galaxia con el nombre de *plugin* 
-(o complemento, en castellano). ¿Por qué los creadores de *Symfony2* han decidido
-llamarles *bundles* en su lugar? Lo mismo hay alguna razón teórica que se me 
+una interfaz sencilla para engancharlos ([i]to plug[/i], en inglés) al sistema. A estos
+bloques se les conoce a lo largo y ancho de la galaxia con el nombre de [i]plugin[/i] 
+(o complemento, en castellano). ¿Por qué los creadores de [i]Symfony2[/i] han decidido
+llamarles [i]bundles[/i] en su lugar? Lo mismo hay alguna razón teórica que se me 
 escapa. Pero de lo que si estoy seguro es de que hay una razón histórica:
 
-El antecesor de *Symfony2*, el fantástico  *symfony 1.x* organiza el código en 
-*aplicaciones*, que a su vez están formadas por *módulos* con la implementación
-de las acciones. Además ofrece un mecanismo de extensión basado en *plugins*, los 
-cuales también organizan el código en *módulos* con sus acciones. Pero a pesar 
-de este paralelismo las aplicaciones son "más importantes" que los *plugins*. De 
-hecho, las aplicaciones pueden usar módulos de los plugins, pero lo contrario no
-tiene sentido tal y como está concebido *symfony 1.x*. Con el tiempo los 
-desarrolladores se dieron cuenta de que era más fácil de mantener y organizar los plugins, ya que son bloques de código autónomos y fácilmente acoplables a la 
+El antecesor de [i]Symfony2[/i], el fantástico  [i]symfony 1.x[/i] organiza el código en 
+[i]aplicaciones[/i], que a su vez están formadas por [i]módulos[/i] con la implementación
+de las acciones. Además ofrece un mecanismo de extensión basado en [i]plugins[/i], los 
+cuales también organizan el código en [i]módulos[/i] con sus acciones. Pero a pesar 
+de este paralelismo las aplicaciones son "más importantes" que los [i]plugins[/i]. De 
+hecho, las aplicaciones pueden usar módulos de los [i]plugins[/i], pero lo contrario no
+tiene sentido tal y como está organizado [i]symfony 1.x[/i]. Con el tiempo los 
+desarrolladores se dieron cuenta de que era más fácil de mantener y organizar los [i]plugins[/i], ya que son bloques de código autónomos y fácilmente acoplables a la 
 aplicación. Este hecho llevó de forma natural  a reorganizar la aplicación
-colocando todo el código funcional en los *plugins*. Las aplicaciones se quedaban 
+colocando todo el código funcional en los [i]plugins[/i]. Las aplicaciones se quedaban 
 prácticamente vacías de código y tan solo contenían ficheros de configuración.
 
-Así pues, en *Symfony2* decidieron olvidarse del concepto de aplicación (en el 
-sentido de *symfony 1.x*), y obligar a que todo el código funcional se organizase
-en *plugins*. Es como hacer a los *plugins* ciudadanos de primera clase del 
+Así pues, en [i]Symfony2[/i] decidieron olvidarse del concepto de aplicación (en el 
+sentido de [i]symfony 1.x[/i]), y obligar a que todo el código funcional se organizase
+en [i]plugins[/i]. Es como hacer a los [i]plugins[/i] ciudadanos de primera clase del 
 framework. Finalmente, para evitar cualquier confusión y dirimir la diferencia 
-entre *plugin* y aplicación, decidieron usar la palabra *bundle*. Y eso es todo.
-Si no conoces *symfony 1.x*, seguro que hubieras preferido llamarle *plugin*. Y si lo conoces
-es probable que también.
+entre [i]plugin[/i] y aplicación, decidieron usar la palabra [i]bundle[/i]. Y eso es todo.
+Si no conoces [i]symfony 1.x[/i], seguro que hubieras preferido llamarle [i]plugin[/i].
+ Y si lo conoces es probable que también.
 
 En fin, lo que realmente debes saber:
+[nota] Un [i]bundle[/i] no es más que un directorio que aloja todo aquello relativo a una 
+ funcionalidad determinada. Puede incluir clases [i]PHP[/i], plantillas,   configuraciones, [i]CSS's[/i] y [i]Javascript[/i].[/nota]
 
-.. important::
-
-   Un *bundle* no es más que un directorio que aloja todo aquello relativo a una 
-   funcionalidad determinada. Puede incluir clases *PHP*, plantillas, 
-   configuraciones, *CSS's* y *Javascript*.
-
-La aplicación *gestión de alimentos* en *Symfony2*
---------------------------------------------------
+[h3]La aplicación *gestión de alimentos* en *Symfony2*[/h3]
 
 Y llegó el momento de ponerse a cocinar código.
 
-Generación de un *Bundle*
-^^^^^^^^^^^^^^^^^^^^^^^^^
-La primera idea que debe quedar clara, expresada de manera simplista, es que 
-*"todo es un bundle"* en *Symfony2*. Por tanto, si queremos desarrollar una
-aplicación necesitaremos, por lo menos, tener un *bundle* para alojar el código de
-la misma. Comencemos por ahí. El siguiente comando de *Symfony2* nos ayuda a 
-generar el esqueleto de un bundle de manera interactiva:
+[h4]Generación de un [i]Bundle[/i][/h4]
 
-.. code-block:: bash
+La primera idea que debe quedar clara, expresada de manera simplista, es que 
+"[b]todo es un bundle[/b]" en [i]Symfony2[/i]. Por tanto, si queremos desarrollar una
+aplicación necesitaremos, por lo menos, tener un [i]bundle[/i] para alojar el código de
+la misma. Comencemos por ahí. El siguiente comando de [i]Symfony2[/i] nos ayuda a 
+generar el esqueleto de un bundle de manera interactiva:
  
-   php app/console generate:bundle
+[code] php app/console generate:bundle[/code]
    
 A cada pregunta que nos hace le acompaña una pequeña ayuda. En primer lugar nos
-pregunta por el espacio de nombre que compartiran las clases del *bundle*. La 
+pregunta por el espacio de nombre que compartiran las clases del [i]bundle[/i]. La 
 recomendación, como se dice en el texto de ayuda del comando, es que comience por
-el nombre del fabricante del *bundle*, el nombre del proyecto o del cliente, 
+el nombre del fabricante del [i]bundle[/i], el nombre del proyecto o del cliente, 
 seguido, opcionalemente, por una o más categorías, y finalizar con el nombre del
-*bundle* seguido del sufijo *Bundle*. Es decir el nombre completo del espacio
-de nombres del *bundle* debe seguir el siguiente patrón:
+[i]bundle[/i] seguido del sufijo [i]Bundle[/i]. Es decir el nombre completo del espacio
+de nombres del [i]bundle[/i] debe seguir el siguiente patrón:
 
-.. code-block:: bash
+[code]Fabricante/categoria1/categoria2/../categoriaN/nombrebundleBundle[/code]
 
-   Fabricante/categoria1/categoria2/../categoriaN/nombrebundleBundle
+Ilustremos esto con varios ejemplos de nombres de [i]bundles[/i] válidos:
 
-Ilustremos esto con varios ejemplos de nombres de *bundles* válidos:
-
-.. code-block:: bash
-
-   AulasMentor/AlimentosBundle
+ [code]  AulasMentor/AlimentosBundle
    AulasMentor/Tutorial/AlimentosBundle
    AulasMentor/CursoSf2/Tutorial/AlimentosBundle
-   Jazzyweb/AulasMentor/AlimentosBundle
+   Jazzyweb/AulasMentor/AlimentosBundle[/code]
 
-Nos quedaremos con el último de los nombres para el *bundle* que vamos a 
-construir. Con este nombre se quiere expresar algo así como que el *bundle*
-``AlimentosBundle`` ha sido creado por ``Jazzyweb`` (una empresa ficticia) para
-el cliente ``AulasMentor``. Como ves, cualquier nombre vale siempre que contenga
-un nombre de fabricante (*vendor name*) y un nombre de *bundle*. En medio podemos
+Nos quedaremos con el último de los nombres para el bundle que vamos a 
+construir. Con este nombre se quiere expresar algo así [i]como[/i] que el [i]bundle[/i]
+[i]AlimentosBundle[/i] ha sido creado por [i]Jazzyweb[/i] (una empresa ficticia) para
+el cliente [i]AulasMentor[/i]. Como ves, cualquier nombre vale siempre que contenga
+un nombre de fabricante ([i]vendor name[/i]) y un nombre de [i]bundle[/i]. En medio podemos
 poner lo que queramos para organizar nuestro trabajo.
 
-Introduce ``Jazzyweb/AulasMentor/AlimentosBundle`` como espacio de nombres del 
-*bundle*. A continuación nos pregunta por el nombre del *bundle*. Y nos ofrece
+Introduce [i]Jazzyweb/AulasMentor/AlimentosBundle[/i] como espacio de nombres del 
+[i]bundle[/i]. A continuación nos pregunta por el nombre del [i]bundle[/i]. Y nos ofrece
 una recomendación que es el mismo nombre del espacio de nombres anterior pero sin
-los separadores ``/``. El nombre del *bundle* es importante pues, en ocasiones, 
-hay que referirse al *bundle* por este nombre.
+los separadores " /". El nombre del [i]bundle[/i] es importante pues, en ocasiones, 
+hay que referirse al [i]bundle[/i] por este nombre.
 
-Presiona ``enter`` para aceptar la sugerencia.
+Presiona [i]enter[/i] para aceptar la sugerencia.
 
-El próximo paso es asignarle una ubicación en la estructura de directorios del 
-proyecto. La flexibilidad de *Symfony2* permite que lo coloques donde quieras.
-Pero es muy recomendable que lo coloques en el directorio ``src``, ya que está 
-pensado para alojar nuestro código. Si lo haces así, te ahorrarás tener que 
-incluir una línea de código en el fichero ``app/autoload.php`` para registrar el
-espacio de nombre en el sistema de autocarga de clases. Esto último es así porque
-en dicho fichero ya se ha contemplado que todas las clases que se aloje en ``src``
-sean autocargadas asignándole como espacio de nombre raíz el mismo nombre que
-la estructura de directorios computada desde ``src``. 
+El próximo paso es asignarle una ubicación en la estructura de directorios del proyecto. La flexibilidad de [i]Symfony2[/i] permite que lo coloques donde quieras.Pero es muy recomendable que lo coloques en el directorio [i]src[/i], ya que está pensado para alojar nuestro código. Si lo haces así, te ahorrarás tener que incluir una línea de código en el fichero [i]app/autoload.php[/i] para registrar elespacio de nombre en el sistema de autocarga de clases. Esto último es así porque en dicho fichero ya se ha contemplado que todas las clases que se aloje en [i]src[/i]
+sean autocargadas asignándole como espacio de nombre raíz el mismo nombre que la estructura de directorios computada desde [i]src[/i]. 
 
-Presiona ``enter`` para aceptar la sugerencia. Cuando termines de generar el 
-*bundle* verás como se ha creado en ``src`` el directorio 
-``Jazzyweb/AulasMentor/AlimentosBundle``, es decir un directorio que tiene la
-misma estructura que el espacio de nombres que hemos asignado al *bundle*. Esto
-es lo que se quiere decir de manera genérica en el párrafo anterior.
+Presiona [i]enter[/i] para aceptar la sugerencia. Cuando termines de generar el *[i]bundle[/i]* verás como se ha creado en [i]src[/i] el directorio [i]Jazzyweb/AulasMentor/AlimentosBundle[/i], es decir un directorio que tiene lamisma estructura que el espacio de nombres que hemos asignado al [i]bundle[/i]. Estoes lo que se quiere decir de manera genérica en el párrafo anterior.
 
-Los *bundles* llevarán asociados algo de configuración. Como mínimo será necesario
-configurar las rutas que mapean las *URL's* en acciones del *bundle*. *Symfony2*
-admite 4 formas de representar las configuraciones: con ficheros *XML*, *YML* o 
-*PHP*, y mediante anotaciones, que es una manera de expresar parámetros de 
-configuración en el propio código funcional aprovechando para ello los comentarios
-de *PHP*.
+Los [i]bundles[/i] llevarán asociados algo de configuración. Como mínimo será necesario configurar las rutas que mapean las [i]URL[/i]'s en acciones del [i]bundle[/i]. [i]Symfony2[/i] admite 4 formas de representar las configuraciones: con ficheros [i]XML[/i], [i]YML[/i] o [i]PHP[/i], y mediante anotaciones, que es una manera de expresar parámetros de configuración en el propio código funcional aprovechando para ello los comentarios de [i]PHP[/i].
 
-Más adelante tendremos ocasión de utilizar las anotaciones y las entenderás mejor.
-Llegados a este punto hemos de decir que la elección es una cuestión de gusto; 
-discutir con alguien acerca de cual es la mejor opción sería una pérdida de tiempo.
-Para el caso de la configuración de los *bundles* (prácticamente para definir 
-rutas como veremos después) hemos elegido los fichero *YAML* como formato para
-la configuración.
+Más adelante tendremos ocasión de utilizar las anotaciones y las entenderás mejor. Llegados a este punto hemos de decir que la elección es una cuestión de gusto; discutir con alguien acerca de cual es la mejor opción sería una pérdida de tiempo. Para el caso de la configuración de los [i]bundles[/i] (prácticamente para definir rutas como veremos después) hemos elegido los fichero [i]YAML[/i] como formato para la configuración.
 
-Selecciona (escribe) ``yml`` como formato de configuración.
+Selecciona (escribe) [i]yml[/i] como formato de configuración.
 
-Por último contesta ``yes`` a la pregunta de si quieres generar la estructura 
-completa. Esta opción generará algunos directorios y archivos extra que siguen
-las recomendaciones de *Symfony2* para alojar código. Es posible que no los 
-utilices, pero no hacen "daño" y sugieren como debe organizarse el código. No
-obstante el programador tiene bastante libertad a la hora de organizar los 
-archivos del *bundle* como quiera.
+Por último contesta [i]yes[/i] a la pregunta de si quieres generar la estructura completa. Esta opción generará algunos directorios y archivos extra que siguen las recomendaciones de [i]Symfony2[/i] para alojar código. Es posible que no los utilices, pero no hacen "daño" y sugieren como debe organizarse el código. No obstante el programador tiene bastante libertad a la hora de organizar los archivos del [i]bundle[/i] como quiera.
 
-Confirma la generación del código. Una vez generado, el asistente te realizará
-dos preguntas más. Primera pregunta: ¿quieres actualizar automáticamente el Kernel?
-y segunda pregunta ¿quieres actualizar directamente el *routing*? Contesta a las
-dos afirmativamente. Vamos a ver con más detalle las consecuencias de estas 
-actualizaciones automáticas.
+Confirma la generación del código. Una vez generado, el asistente te realizará dos preguntas más. Primera pregunta: ¿quieres actualizar automáticamente el [i]Kernel[/i]? y segunda pregunta ¿quieres actualizar directamente el [i]routing[/i]? Contesta a las dos afirmativamente. Vamos a ver con más detalle las consecuencias de estas actualizaciones automáticas.
 
-Por una parte el *bundle*, como ya hemos explicado, es un bloque desacoplado y
-reutilizable de código que agrupa a una serie de funcionalidades. Si queremos 
-utilizarlo en nuestro proyecto debemos "notificarlo" al framework. Es decir,
-hemos de "engancharlo". Esto se hace registrándolo en el archivo 
-``app/AppKernel.php``. La primera actualización automática ha realizado dicho
-registro. Abre ese archivo y fíjate como al final del método ``registerBundles()``
+Por una parte el [i]bundle[/i], como ya hemos explicado, es un bloque desacoplado y reutilizable de código que agrupa a una serie de funcionalidades. Si queremos utilizarlo en nuestro proyecto debemos "notificarlo" al framework. Es decir, hemos de "engancharlo". Esto se hace registrándolo en el archivo [i]app/AppKernel.php[/i]. La primera actualización automática ha realizado dicho registro. Abre ese archivo y fíjate como al final del método [i]registerBundles()[/i]
 aparece la siguiente línea:
 
-.. code-block:: php
-
-   ...
+[php]   ...
    new Jazzyweb\AulasMentor\AlimentosBundle\JazzywebAulasMentorAlimentosBundle(),
    ...
+[/php]
 
-Dicha línea ha sido insertada automáticamente como consecuencia de haber respondido
-afirmativamente a la primera pregunta. El cometido de la línea es registrar el 
-*bundle* recien creado en el framework para poder hacer uso del mismo.
+Dicha línea ha sido insertada automáticamente como consecuencia de haber respondido afirmativamente a la primera pregunta. El cometido de la línea es registrar el [i]bundle[/i] recien creado en el framework para poder hacer uso del mismo.
 
-La segunda actualización automática "enlaza" la tabla enrutamiento general de 
-la aplicación con la tabla de enrutamiento particular del *bundle*. La tabla de
-enrutamiento es la responsable de indicar al framework como deben mapearse las 
-*URL's* en acciones *PHP*. Para ver como se ha realizado este enlace mira el
-fichero ``app/config/routing.yml``:
+La segunda actualización automática "enlaza" la tabla enrutamiento general de la aplicación con la tabla de enrutamiento particular del [i]bundle[/i]. La tabla de enrutamiento es la responsable de indicar al framework como deben mapearse las [i]URL[/i]'s en acciones [i]PHP[/i]. Para ver como se ha realizado este enlace mira el fichero [i]app/config/routing.yml[/i]:
 
-.. code-block:: yaml
-
-   JazzywebAulasMentorAlimentosBundle:
+  [code] JazzywebAulasMentorAlimentosBundle:
     resource: "@JazzywebAulasMentorAlimentosBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /[/code]
 
-Estas líneas han sido introducidas automáticamente como consecuencia de contestar
-afirmativamente a la segunda pregunta. Observa que el apartado *resource* es la
-dirección en el sistema de ficheros de la tabla de enrutamiento propia del *bundle*
-que acabamos de crear. *Symfony2* sabe convertir ``@JazzywebAulasMentorAlimentosBundle`` 
-en la ubicación del *bundle* pues está debidamente registrado. 
+Estas líneas han sido introducidas automáticamente como consecuencia de contestar afirmativamente a la segunda pregunta. Observa que el apartado [i]resource[/i] es la dirección en el sistema de ficheros de la tabla de enrutamiento propia del [i]bundle[/i] que acabamos de crear. [i]Symfony2[/i] sabe convertir [i]@JazzywebAulasMentorAlimentosBundle[/i] en la ubicación del  [i]bundle[/i] pues está debidamente registrado. 
 
-Es importante que conozcas como se acopla un *bundle* a la aplicación, pues si
-falla la actualización automática del ``KernelApp.php`` y/o del ``routing.yml``,
-debes realizarlas manualmente.
+Es importante que conozcas como se acopla un [i]bundle[/i] a la aplicación, pues si falla la actualización automática del [i]KernelApp.php[/i] y/o del [i]routing.yml[/i], debes realizarlas manualmente.
 
-Ahora puedes echarle un vistazo al fichero ``routing.yml`` del *bundle* 
-(``src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml``). Verás que
-existe una ruta mapeada contra una acción. Después explicaremos los detalles de la
-ruta. Esta última ruta sirve para probar el *bundle*. Así que accede desde tu 
-navegador web a la siguiente *URL* (que es la que se corresponde con esta ruta de 
-prueba)
-
-.. code-block:: bash
+Ahora puedes echarle un vistazo al fichero [i]routing.yml[/i] del [i]bundle[/i] ([i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml[/i]). Verás que existe una ruta mapeada contra una acción. Después explicaremos los detalles de la ruta. Esta última ruta sirve para probar el [i]bundle[/i]. Así que accede desde tu navegador web a la siguiente [i]URL[/i] (que es la que se corresponde con esta ruta de prueba)
    
-   http://localhost/Symfony/web/app_dev.php/hello/alberto
+   [code]http://localhost/Symfony/web/app_dev.php/hello/alberto[/code]
    
-Si todo va bien, obtendrás como respuesta un saludo. Puedes cambiar el nombre
-del final de la ruta.
+Si todo va bien, obtendrás como respuesta un saludo. Puedes cambiar el nombre del final de la ruta.
 
-Resumiendo: Para desarrollar nuestra aplicación hemos de contar al menos con un
-*bundle* para escribir el código. Según la complejidad de la aplicación será
-más o menos adecuado organizar el código en varios *bundles*. El criterio a seguir
-es el de agrupar en cada *bundle* funcionalidades similares o del mismo tipo.
-Los bundles son bloques desacoplados y tienen asociado un espacio de nombre. Para
-acoplar un bundle al framework hay que :
+Resumiendo: Para desarrollar nuestra aplicación hemos de contar al menos con un [i]bundle[/i] para escribir el código. Según la complejidad de la aplicación será más o menos adecuado organizar el código en varios [i]bundles[/i]. El criterio a seguir es el de agrupar en cada [i]bundle[/i] funcionalidades similares o del mismo tipo.
 
-1. Registrar el espacio de nombre en el sistema de autocarga (fichero 
-   ``app/autoload.php``. Este paso no es necesario si ubicamos al *bundle* en el
-   directorio ``src``.
+Los bundles son bloques desacoplados y tienen asociado un espacio de nombre. Para acoplar un bundle al framework hay que :
 
-2. Registrar al bundle en el fichero ``app/AppKernel.php``. Esta operación se
-   puede hacer automáticamente a través del generador interactivo de *bundles*,
-   pero si fallase por alguna razón (por ejemplo que los permisos de dicho archivo
-   no estén bien definidos). Habría que hacerlo a mano.
+1. Registrar el espacio de nombre en el sistema de autocarga (fichero    ``app/autoload.php``. Este paso no es necesario si ubicamos al *bundle* en el   directorio ``src``.
 
-3. Importar las tablas de enrutamiento del *bundle* en la tabla de enrutamiento
-   de la aplicación.
+2. Registrar al bundle en el fichero [i]app/AppKernel.php[/i]. Esta operación se  puede hacer automáticamente a través del generador interactivo de [i]bundles[/i],   pero si fallase por alguna razón (por ejemplo que los permisos de dicho archivo   no estén bien definidos). Habría que hacerlo a mano.
 
-Anatomía de un *Bundle*
-^^^^^^^^^^^^^^^^^^^^^^^
+3. Importar las tablas de enrutamiento del [i]bundle[/i] en la tabla de enrutamiento   de la aplicación.
 
-Si has seguido las indicaciones que hemos dado en este tutorial, debes tener en tu
-directorio ``src`` dos directorios: ``Jazzyweb`` y ``Acme`` . El primero se 
-corresponde con el *bundle* que acabamos de crear, y el segundo es un ejemplo
-que viene de serie con la distribución standard de *Symfony2* y que contiene el
-código de la demo con la que has jugado hace un rato. Vamos a utilizar este 
-último para realizar la *disección* de un *bundle*, ya que está más rellenito de
-código  que nuestro recien horneado y esquelético *bundle*. 
+[h4]Anatomía de un [i]Bundle[/i][/h4]
 
-.. code-block:: bash
+Si has seguido las indicaciones que hemos dado en este tutorial, debes tener en tu directorio [i]src[/i] dos directorios: [i]Jazzyweb[/i] y [i]Acme[/i] . El primero se corresponde con el [i]bundle[/i] que acabamos de crear, y el segundo es un ejemplo que viene de serie con la distribución standard de [i]Symfony2[/i] y que contiene el código de la demo con la que has jugado hace un rato. Vamos a utilizar este último para realizar la [b]disección[/b] de un [i]bundle[/i], ya que está más rellenito de código  que nuestro recien horneado y esquelético [i]bundle[/i]. 
 
-    Acme/
+    [code]Acme/
     └── DemoBundle
 	├── AcmeDemoBundle.php
 	├── Controller
@@ -523,247 +428,136 @@ código  que nuestro recien horneado y esquelético *bundle*.
 	│       └── DemoControllerTest.php
 	└── Twig
 	    └── Extension
-		└── DemoExtension.php
+		└── DemoExtension.php[/code]
+[list]
 
-* ``AcmeDemoBundle.php`` es una clase que extiende a 
-  ``Symfony\Component\HttpKernel\Bundle\Bundle`` y que define al *bundle*.
-  Se utiliza en el proceso de registro del mismo (recuerda, en el fichero 
-  ``app/AppKernel.php``). Todos los *bundles* deben incorporar esta clase (bueno,
-  el nombre cambiará según el nombre del *bundle*)
 
-* ``Controller`` es el directorio donde se deben colocar los controladores con las
-  distintas acciones del *bundle*. Las acciones son las funciones (o métodos)  Lo lógico y recomendado, es crear una clase
-  ``Controller`` por cada grupo de funcionalidades. Pero no es una exigencia, si
-  quieres puedes colocar todas tus acciones en el mismo controlador. Cuando se
-  genera un *bundle* se crea el controlador *DefaultController*.
+[*] [i]AcmeDemoBundle.php[/i] es una clase que extiende a   [i]Symfony\Component\HttpKernel\Bundle\Bundle[/i] y que define al [i]bundle[/i].   Se utiliza en el proceso de registro del mismo (recuerda, en el fichero   [i]app/AppKernel.php[/i]). Todos los [i]bundles[/i] deben incorporar esta clase (bueno,  el nombre cambiará según el nombre del [i]bundle[/i]).
 
-* ``Dependency Injection``. Una de las características más sobresaliente de
-  *Symfony2* es el uso intensivo que hace de la *Inyección de Dependencias*, un
-  potente patrón de diseño mediante el que se facilita la creación y configuración
-  de objetos que prestan servicios en una aplicación gracias a la gestión 
-  automática de sus dependencias. Contribuye a crear un código más desacoplado y
-  coherente. Presentaremos este concepto en un tutorial dedicado en exclusiva a
-  la Inyección de Dependencias en *Symfony2*. Aunque no es un patrón complicado, es
-  dificil de explicar con precisión y  claridad. 
+[*] [i]Controller[/i] es el directorio donde se deben colocar los controladores con las  distintas acciones del [i]bundle[/i]. Las acciones son las funciones (o métodos)  Lo lógico y recomendado, es crear una clase  [i]Controller[/i] por cada grupo de funcionalidades. Pero no es una exigencia, si   quieres puedes colocar todas tus acciones en el mismo controlador. Cuando se  genera un [i]bundle[/i] se crea el controlador [i]DefaultController[/i].
+
+[*] ``[i]Dependency Injection[/i]``. Una de las características más sobresaliente de   *[i]Symfony2[/i]* es el uso intensivo que hace de la *[i]Inyección de Dependencias[/i]*, un  potente patrón de diseño mediante el que se facilita la creación y configuración  de objetos que prestan servicios en una aplicación gracias a la gestión   automática de sus dependencias. Contribuye a crear un código más  desacoplado y  coherente. En este [url=http://juandarodriguez.es/tutoriales-2/inyeccion-de-dependencias-en-symfony2/]tutorial[/url] se explica con bastante detalle como se trata la Inyección de dependencias en [i]Symfony2[/i]. Aunque no es un patrón complicado, es  dificil de explicar con precisión y  claridad.   [i]Symfony2[/i] nos ofrece dos maneras de "cargar" la configuración de las   dependencias y los servicios creados. Una más sencilla y directa, y otra más  elaborada y apropiada para el caso en que nuestro [i]bundle[/i] vaya a ser   distribuido con la intención de que se utilice en otros proyectos [i]Symfony2[/i]. En  este directorio se ubican las  clases relacionadas con este segundo método de  gestionar las dependencias.
+
+[*] [i]Resources[/i], es decir, recursos. Entendemos por recursos: los ficheros de   configuración del [i]bundle[/i] (directorio [i]config[/i]), los [i]assets[/i] que requiere  el [i]bundle[/i] para enviar en sus respuestas (directorio [i]public[/i]) y las   plantillas con las que se [i]renderizan[/i] (pintan) el resultado de las acciones de  los controladores (directorio [i]view[/i]). Fíjate como en este [i]bundle[/i],  las plantillas están  organizadas en tres directorios ([i]Demo[/i], [i]Secured[/i] y   [i]Welcome[/i]) cuyos nombres coinciden con los de los controladores.   
+
+[*] [i]Test[/i], es el directorio donde viven las pruebas unitarias y funcionales del  [i]bundle[/i].
+
+[/list]
+
+Estos son los directorios más típicos de cualquier [i]bundle[/i], de hecho son los que se generan automáticamente con el comando [i]app/console generate:bundle[/i]. Sin embargo un [i]bundle[/i] puede tener muchos más directorios y ficheros, organizados como su creador crea conveniente. En el caso del [i]bundle[/i] [i]AcmeDemoBundle[/i], puedes ver los siguientes "extras":
+
+[list]
+[*] [i]Form[/i] es el directorio donde se colocarán las clases que definen los   formularios de la aplicación.
+
+[*] [i]ControllerListener.php[/i]  describe un [i]event listener[/i] que es un mecanismo muy   adecuado de extender y alterar el flujo del framework sin  tener que tocar el   código original del componente del framework que utiliza dicho sistema. Se trata   de una característica avanzada de [i]Symfony2[/i] raramente utilizada cuando uno se  esta iniciando.
+
+[*] [i]Twig[/i] es un directorio propio de este [i]bundle[/i], en el que se ha implementado  una extensión del sistema de plantillas.
   
-  *Symfony2* nos ofrece dos maneras de "cargar" la configuración de las 
-  dependencias y los servicios creados. Una más sencilla y directa, y otra más
-  elaborada y apropiada para el caso en que nuestro *bundle* vaya a ser
-  distribuido con la intención de que se utilice en otros proyectos *Symfony2*. En
-  este directorio se ubican las  clases relacionadas con este segundo método de
-  gestionar las dependencias.
+[/list]
 
-* ``Resources``, es decir, recursos. Entendemos por recursos: los ficheros de
-  configuración del *bundle* (directorio ``config``), los *assets* que requiere
-  el *bundle* para enviar en sus respuestas (directorio ``public``) y las 
-  plantillas con las que se *renderizan* (pintan) el resultado de las acciones de
-  los controladores (directorio ``view``). Fíjate como en este *bundle*,
-  las plantillas están  organizadas en tres directorios (``Demo``, ``Secured`` y 
-  ``Welcome``) cuyos nombres coinciden con los de los controladores.   
+Ahora ya nos encontramos con un mínimo bagaje para emprender el desarrollo del [i]bundle[/i]  [i]JazzywebAulasMentorAlimentosBundle[/i] y, por tanto de la aplicación.
 
-* ``Test``, es el directorio donde viven las pruebas unitarias y funcionales del
-  *bundle*.
 
-Estos son los directorios más típicos de cualquier *bundle*, de hecho son los que
-se generan automáticamente con el comando ``app/console generate:bundle``. Sin
-embargo un *bundle* puede tener muchos más directorios y ficheros, organizados
-como su creador crea conveniente. En el caso del *bundle* ``AcmeDemoBundle``,
-puedes ver los siguientes "extras":
 
-* ``Form`` es el directorio donde se colocarán las clases que definen los 
-  formularios de la aplicación.
+[h4]Flujo básico de creación de páginas en [i]Symfony2[/i][/h4]
 
-* ``ControllerListener.php``  describe un *event listener* que es un mecanismo muy
-  adecuado de extender y alterar el flujo del framework sin  tener que tocar el
-  código original del componente del framework que utiliza dicho sistema. Se trata
-  de una característica avanzada de *Symfony2* raramente utilizada cuando uno se
-  esta iniciando.
+La creación de páginas web con [i]Symfony2[/i] involucra tres pasos:
 
-* ``Twig`` es un directorio propio de este *bundle*, en el que se ha implementado
-  una extensión del sistema de plantillas.
-  
-Ahora ya nos encontramos con un mínimo bagaje para emprender el desarrollo del
-*bundle* ``JazzywebAulasMentorAlimentosBundle`` y, por tanto de la aplicación.
+1. Creación de la ruta que mapea la [i]URL[/i] de la página en una acción de algún    controlador. Dicha ruta se registra en el archivo    [i]config/Resources/routing.yml[/i] del [i]bundle[/i], que a su vez debe estar   correctamente importado en el archivo de rutas general de la aplicación   [i]app/config/routing[/i].
 
-Flujo básico de creación de páginas en *Symfony2*
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-La creación de páginas web con *Symfony2* involucra tres pasos:
-
-1. Creación de la ruta que mapea la *URL* de la página en una acción de algún 
-   controlador. Dicha ruta se registra en el archivo 
-   ``config/Resources/routing.yml`` del *bundle*, que a su vez debe estar
-   correctamente importado en el archivo de rutas general de la aplicación 
-   ``app/config/routing``.
-
-2. Creación de dicha acción en el controlador correspondiente. La acción, haciendo
-   uso del modelo, realizará las operaciones necesarias y obtendrá los datos crudos
-   (raw), es decir sin ningún tipo de formato, que facilitará a una plantilla para
-   ser pintados (renderizados). El código de los controladores debe ubicarse en
-   el directorio ``Controllers`` del *bundle*.
+2. Creación de dicha acción en el controlador correspondiente. La acción, haciendo   uso del modelo, realizará las operaciones necesarias y obtendrá los datos crudos   ([i]raw[/i]), es decir sin ningún tipo de formato, que facilitará a una plantilla para   ser pintados (renderizados). El código de los controladores debe ubicarse en   el directorio [i]Controllers[/i] del [i]bundle[/i].
    
-3. Creación de dicha plantilla. Esto se hace en el directorio ``Resources/view``.
-   Con el fin de organizar bien las plantillas, es recomendable crear un 
-   directorio con el nombre de cada controlador. También es muy recomendable
-   utilizar *Twig* como sistema de plantillas, aunque también se puede utilizar
-   *PHP*.
+3. Creación de dicha plantilla. Esto se hace en el directorio [i]Resources/view[/i].    Con el fin de organizar bien las plantillas, es recomendable crear un    directorio con el nombre de cada controlador. También es muy recomendable  utilizar [i]Twig[/i] como sistema de plantillas, aunque también se puede utilizar   [i]PHP[/i].
 
+Estos pasos son, por supuesto, una guía general y mínima que debemos seguir en la creación de las páginas de nuestra aplicación. No obstante, en muchos casos tendremos que realizar otras operaciones que se salen de este flujo y que tienen que ver más con la construcción del modelo de la aplicación.
 
-Estos pasos son, por supuesto, una guía general y mínima que debemos seguir en
-la creación de las páginas de nuestra aplicación. No obstante, en muchos casos
-tendremos que realizar otras operaciones que se salen de este flujo y que tienen
-que ver más con la construcción del modelo de la aplicación.
+[h4]Definición de las rutas del [i]bundle[/i][/h4]
 
-Definición de las rutas del *bundle*
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Ya hemos visto que en [i]Symfony2[/i] todas las peticiones a la aplicación se realizan a través de un script [i]PHP[/i] que se llama controlador frontal ([i]app.php[/i]). Este script "sabe" lo que debe devolver como respuesta al usuario "mirando" la *ruta* que lo acompaña en cada petición. 
 
-Ya hemos visto que en *Symfony2* todas las peticiones a la aplicación se realizan a
-través de un script *PHP* que se llama controlador frontal (``app.php``).
-Este script "sabe" lo que debe devolver como respuesta al usuario "mirando" la *ruta*
-que lo acompaña en cada petición. 
+Cada ruta en [i]Symfony2[/i] consiste en un conjunto de parámetros separados por el caracter "/". Ejemplos de [i]URL[/i]'s con rutas de [i]Symfony2[/i]  serían:
 
-Cada ruta en *Symfony2* consiste en un conjunto de parámetros separados por el 
-caracter ``/``. Ejemplos de *URL's* con rutas de *Symfony2*  serían:
-
-.. code-block:: bash
-
-   http://tu.servidor/app.php
+  [code] http://tu.servidor/app.php
    http://tu.servidor/app.php/listar
-   http://tu.servidor/app.php/ver/4
+   http://tu.servidor/app.php/ver/4[/code]
 
 Las rutas correspondientes serían:
 
-.. code-block:: bash
-
+  [code] 
    /
    /listar
-   /ver/4
+   /ver/4[/code]
 
-Es decir, los parámetros que siguen al controlador frontal. Esta forma de pasar 
-parámetros a través de la *URL* mejora en varios aspectos a la clásica *query string* 
-del tipo:
+Es decir, los parámetros que siguen al controlador frontal. Esta forma de pasar parámetros a través de la [i]URL[/i] mejora en varios aspectos a la clásica [i]query string[/i] del tipo:
 
-.. code-block:: bash
+ [code]?param1=val1&param2=val2&...&paramN=valN[/code]
 
-   ?param1=val1&param2=val2&...&paramN=valN
+En primer lugar el usuario que utiliza el navegador “siente” que la [i]URL[/i] que aparece en la barra de direcciones forma parte de la aplicación que está utilizando. Por tanto, cualquier [i]URL[/i] llena de carácteres extraños y demasiado larga redunda en una degradación estética. En segundo lugar y más allá de cuestiones estéticas, cuando utilizamos query strings clásicas estamos dando información innecesaria al usuario, ya que el nombre de los parámetros ([i]paramX[/i]) es algo que tiene sentido únicamente para la aplicación en el servidor. Esta información extra, además de dar lugar a [i]URL[/i]’s horribles, supone un problema de seguridad, ya que el usuario podría utilizarlas para sacar conclusiones acerca de la aplicación y utilizarla para comprometerla.
 
-En primer lugar el usuario que utiliza el navegador “siente” que la *URL* que aparece
-en la barra de direcciones forma parte de la aplicación que está utilizando. Por tanto,
-cualquier *URL* llena de carácteres extraños y demasiado larga redunda en una 
-degradación estética. En segundo lugar y más allá de cuestiones estéticas, cuando utilizamos query strings clásicas estamos dando información innecesaria al usuario, ya que
-el nombre de los parámetros (``paramX``) es algo que tiene sentido únicamente para la 
-aplicación en el servidor. Esta información extra, además de dar lugar a *URL’s* 
-horribles, supone un problema de seguridad, ya que el usuario podría utilizarlas para
-sacar conclusiones acerca de la aplicación y utilizarla para comprometerla.
+El aspecto de las [i]URL[/i]'s puede mejorar aún más si utilizamos el módulo [i]Rewrite[/i] del servidor web, ya que también podemos eliminar el nombre del controlador frontal  [i]app.php[/i]). Así además de mejorar el estilo de la [i]URL[/i], ocultamos al usuario información acerca del lenguaje de programación que estamos utilizando en el servidor.
 
-El aspecto de las *URL's* puede mejorar aún más si utilizamos el módulo ``Rewrite``
-del servidor web, ya que también podemos eliminar el nombre del controlador frontal
-(``app.php``). Así además de mejorar el estilo de la *URL*, ocultamos al usuario
-información acerca del lenguaje de programación que estamos utilizando en el servidor.
+Nos quedarían [i]URL[/i]'s de este tipo:
 
-Nos quedarían *URL's* de este tipo:
-
-.. code-block:: bash
-
-   http://tu.servidor/
+   [code]http://tu.servidor/
    http://tu.servidor/listar
-   http://tu.servidor/ver/4
+   http://tu.servidor/ver/4[/code]
 
 ¡Mucho más legibles y elegantes!
 
-.. note::
-
-   En el directorio ``web`` existe un fichero ``.htaccess`` con el siguiente contenido:
-   
-   .. code-block:: bash
-   
-      <IfModule mod_rewrite.c>
+[nota]En el directorio ``web`` existe un fichero ``.htaccess`` con el siguiente contenido:
+      
+      [code]<IfModule mod_rewrite.c>
         RewriteEngine On
         RewriteCond %{REQUEST_FILENAME} !-f
         RewriteRule ^(.*)$ app.php [QSA,L]
-      </IfModule>
+      </IfModule>[/code]
    
-   La función de dicho fichero es, precisamente, reescribir las rutas anteponiendo
-   ``app.php``, de manera que no sea necesario especificar el controlador frontal
-   en la *URL*. Para que esto funcione es necesario que el servidor web tenga
-   instalado el módulo ``Rewrite``, y permita el cambio de directivas a través
-   de ficheros ``.htaccess``.
+ La función de dicho fichero es, precisamente, reescribir las rutas anteponiendo   ``app.php``, de manera que no sea necesario especificar el controlador frontal  en la *URL*. Para que esto funcione es necesario que el servidor web tenga   instalado el módulo ``Rewrite``, y permita el cambio de directivas a través  de ficheros ``.htaccess``. [/nota]
 
-La siguiente tabla muestra las rutas que definiremos en nuestra aplicación y la 
-acción que deben disparar.
+La siguiente tabla muestra las rutas que definiremos en nuestra aplicación y la acción que deben disparar.
 
-========== =======================
-URL        Acción
-========== =======================
-/          mostrar pantalla inicio
-/listar    listar alimentos
-/insertar  insertar un alimento
-/buscar    buscar alimentos
-/ver/x     ver el alimento *x*
-========== =======================
+[code]
+/          (mostrar pantalla inicio)
+/listar    (listar alimentos)
+/insertar  (insertar un alimento)
+/buscar    (buscar alimentos)
+/ver/x     (ver el alimento x)
+[/code]
 
-En *Symfony2* las rutas se definen en el archivo ``app/config/routing.yml``. Para
-que los *bundles* no pierdan la autonomía que debe caracterizarlos, las rutas que 
-se mapean en un controlador de un determinado *bundle* deberían definirse dentro
-del propio *bundle*. Concretamente en el archivo ``Resources/config/routing.yml``
-del *bundle*. Y para hacerlas disponibles a la aplicación, se importa este último
-fichero en ``app/config/routing.yml``.
+En [i]Symfony2[/i] las rutas se definen en el archivo [i]app/config/routing.ym[/i]l. Para que los [i]bundles[/i] no pierdan la autonomía que debe caracterizarlos, las rutas que se mapean en un controlador de un determinado [i]bundle[/i] deberían definirse dentro del propio [i]bundle[/i]. Concretamente en el archivo [i]Resources/config/routing.yml[/i] del [i]bundle[/i]. Y para hacerlas disponibles a la aplicación, se importa este último fichero en [i]app/config/routing.yml[/i].
 
-.. note::
-
-   Aunque el sitio recomendado para ubicar el fichero ``routing.yml`` de un 
-   *bundle* es ``Resources/config``, *Symfony2* no lo exige, ya que en el archivo 
-   ``app/config/routing.yml``, que es el que realmente define las rutas, puedes
-   indicar la ruta concreta de los archivos que se quieren importar.
+[nota]
+ Aunque el sitio recomendado para ubicar el fichero ``routing.yml`` de un    *bundle* es ``Resources/config``, *Symfony2* no lo exige, ya que en el archivo    ``app/config/routing.yml``, que es el que realmente define las rutas, puedes   indicar la ruta concreta de los archivos que se quieren importar.
+[/nota]
    
-Abre el archivo ``src/Jazzyweb/AulasMentor/AlimentosBunle/Resources/config/routing.yml``
+Abre el archivo [i]src/Jazzyweb/AulasMentor/AlimentosBunle/Resources/config/routing.yml[/i]
 y borra las siguientes líneas:
 
-.. code-block:: yaml
-
-   JazzywebAulasMentorAlimentosBundle_homepage:
+  [code] 
+JazzywebAulasMentorAlimentosBundle_homepage:
     pattern:  /hello/{name}
-    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }
+    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/code]
 
-Las líneas que acabas de borrar definían la ruta de la acción de ejemplo que se
-crea automáticamente al generar el bundle. Fíjate en la estructura de la definición
-de una ruta; consisten en un identificador de la ruta
-(``JazzywebAulasMentorAlimentosBundle_homepage``), 
-que puede ser cualquiera siempre que sea único en todo el framework, el patrón
-de la ruta (``pattern: /hello/{name}``), que describe la estructura de la ruta, y 
-la declaración del controlador sobre el que se mapea la ruta
-(``defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }``).
+Las líneas que acabas de borrar definían la ruta de la acción de ejemplo que se crea automáticamente al generar el bundle. Fíjate en la estructura de la definición de una ruta; consisten en un identificador de la ruta ([i]JazzywebAulasMentorAlimentosBundle_homepage[/i]), 
+que puede ser cualquiera siempre que sea único en todo el framework, el patrón de la ruta ([i]pattern: /hello/{name}[/i]), que describe la estructura de la ruta, y la declaración del controlador sobre el que se mapea la ruta ([i]defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/i]).
 
 Creamos nuestra primera ruta añadiendo al archivo anterior lo siguiente:
 
-.. code-block:: yaml
-
-   JAMAB_homepage:
+   [code]JAMAB_homepage:
     pattern:  /
-    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }
+    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/code]
    
-Como el nombre de la ruta debe ser único en toda la aplicación, es una buena 
-práctica nombrarlas anteponiendo un prefijo con el nombre del *bundle*, o con algo
-que lo identifique. Como el nombre de nuestro *bundle* es muy largo, hemos optado
-por usar como prefijo las siglas ``JAMAB``.
+Como el nombre de la ruta debe ser único en toda la aplicación, es una buena práctica nombrarlas anteponiendo un prefijo con el nombre del [i]bundle[/i], o con algo que lo identifique. Como el nombre de nuestro [i]bundle[/i] es muy largo, hemos optado por usar como prefijo las siglas [i]JAMAB[/i].
 
-Una vez definida la ruta debemos implementar la acción del controlador especificada
-en la misma, es decir ``JazzywebAulasMentorAlimentosBundle:Default:index``. 
+Una vez definida la ruta debemos implementar la acción del controlador especificada en la misma, es decir [i]JazzywebAulasMentorAlimentosBundle:Default:index[/i]. 
 
-.. note::
+[nota]
+   Fíjate en el patrón que se utiliza para especificar la acción del controlador:    [i]JazzywebAulasMentorAlimentosBundle:Default:index[/i]. A esto se le llama en   [i]Symfony2[/i] un nombre lógico. Está compuesto por el nombre del [i]bundle[/i], el   nombre del controlador, y el nombre de la acción separados por el caracter   ":". En este caso, el nombre lógico hace referencia a el método   [i]indexAction()[/i] de una clase [i]PHP[/i] llamada  [i]Jazzyweb\AulasMentor\AlimentosBundle\Controller\DefaultController[/i].   Es decir, hay que añadir el sufijo [i]Controller[/i] al nombre del controlador, y   el sufijo [i]Action[/i] al nombre de la acción.
+[/nota] 
 
-   Fíjate en el patrón que se utiliza para especificar la acción del controlador:
-   ``JazzywebAulasMentorAlimentosBundle:Default:index``. A esto se le llama en
-   *Symfony2* un nombre lógico. Está compuesto por el nombre del *bundle*, el
-   nombre del controlador, y el nombre de la acción separados por el caracter
-   ``:``. En este caso, el nombre lógico hace referencia a el método
-   ``indexAction()`` de una clase *PHP* llamada
-   ``Jazzyweb\AulasMentor\AlimentosBundle\Controller\DefaultController``.
-   Es decir, hay que añadir el sufijo ``Controller`` al nombre del controlador, y
-   el sufijo ``Action`` al nombre de la acción.
- 
-Creación de la acción en el controlador
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[h4]Creación de la acción en el controlador[/h4]
+
+##############################################
   
 Editamos el fichero ``src/Jazzyweb/AulasMentor/AlimentosBundle/Controller/DefaultController.php``,
 y reescribimos el método ``indexAction()``:

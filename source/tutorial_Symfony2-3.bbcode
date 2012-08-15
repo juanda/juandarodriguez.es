@@ -1,0 +1,622 @@
+[h3]Implementamos el resto de la aplicación[/h3]
+
+Siguiendo estos tres pasos: enrutar, crear código de la acción (controlador) y crear la plantilla, podemos completar lo que nos falta de la aplicación. No obstante, en las acciones que faltan, se necesita acceder a la base de datos para recuperar, modificar y crear alimentos. La distribución standard de [i]Symfony2[/i]  proporciona un potente servicio para el acceso a los datos persistentes, es decir, los que se almacenan en algún tipo de base de datos. Pero no obliga a utilizarlo. No solo eso, tampoco forma parte del núcleo de [i]Symfony2[/i], es decir, no es un componente. Por ello es una decisión del desarrollador utilizarlo o no. Es en ese sentido que [i]Fabien Potencier[/i], lider del proyecto [i]Symfony2[/i], proclama que este último no es un framework [i]MVC[/i], ya que no dice nada sobre como debes construir tu modelo.
+
+Aunque lo recomendable es utilizar [i]Doctrine2[/i] (que es el servicio de persistencia que viene incorporado en la distribución standard), o [i]Propel[/i], en este tutorial no los vamos a utilizar por que ya llevamos muchos conceptos introducidos y no queremos sobrecargarlo. Además queremos ilustrar como podemos construir el modelo a nuestro antojo.
+
+Así pues, antes de implentar el resto de las acciones que componen la aplicación, vamos a elaborar el modelo.
+
+Crea un directorio denominado [i]Model[/i] (el nombre puede ser cualquiera), y crea ahí un fichero [i]Model.php[/i] con el siguiente código: 
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Model/Model.php[/i]
+
+   [php] <?php
+
+    namespace Jazzyweb\AulasMentor\AlimentosBundle\Model;
+
+    class Model
+    {
+	protected $conexion;
+
+	 public function __construct($dbname,$dbuser,$dbpass,$dbhost)
+     {   
+         $mvc_bd_conexion = mysql_connect($dbhost, $dbuser, $dbpass);
+
+         if (!$mvc_bd_conexion) {
+             die('No ha sido posible realizar la conexión con la base de datos: '
+             . mysql_error());
+         }
+         mysql_select_db($dbname, $mvc_bd_conexion);
+
+         mysql_set_charset('utf8');
+
+         $this->conexion = $mvc_bd_conexion;
+     }
+
+
+	public function bd_conexion()
+	{
+	    
+	}
+
+	public function dameAlimentos()
+	{
+	    $sql = "select * from alimentos order by energia desc";
+
+	    $result = mysql_query($sql, $this->conexion);
+
+	    $alimentos = array();
+	    while ($row = mysql_fetch_assoc($result))
+	    {
+		$alimentos[] = $row;
+	    }
+
+	    return $alimentos;
+	}
+
+	public function buscarAlimentosPorNombre($nombre)
+	{
+	    $nombre = htmlspecialchars($nombre);
+
+	    $sql = "select * from alimentos where nombre like '" . $nombre . "' order
+	     by energia desc";
+
+	    $result = mysql_query($sql, $this->conexion);
+
+	    $alimentos = array();
+	    while ($row = mysql_fetch_assoc($result))
+	    {
+		$alimentos[] = $row;
+	    }
+
+	    return $alimentos;
+	}
+	
+	public function dameAlimento($id)
+	{
+	    $id = htmlspecialchars($id);
+	    
+	    $sql = "select * from alimentos where id=".$id;
+	    
+	    $result = mysql_query($sql, $this->conexion);
+
+	    $alimentos = array();
+	    $row = mysql_fetch_assoc($result);
+	    
+	    return $row;
+	    
+	}
+
+        public function insertarAlimento($n, $e, $p, $hc, $f, $g)
+	{
+	    $n = htmlspecialchars($n);
+	    $e = htmlspecialchars($e);
+	    $p = htmlspecialchars($p);
+	    $hc = htmlspecialchars($hc);
+	    $f = htmlspecialchars($f);
+	    $g = htmlspecialchars($g);
+
+	    $sql = "insert into alimentos (nombre, energia, proteina, hidratocarbono, 
+	    fibra, grasatotal) values ('" .
+		    $n . "'," . $e . "," . $p . "," . $hc . "," . $f . "," . $g . ")";
+
+	    $result = mysql_query($sql, $this->conexion);
+
+	    return $result;
+	}
+
+    }[/php]
+
+El próximo paso es completar el código del controlador con el resto de las acciones que se han mapeado en las rutas definidas anteriormente. El código del controlador [i]DefaultController[/i] quedaría así:
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Controller/DefaultController.php[/i]
+  
+ [php] <?php
+
+    namespace Jazzyweb\AulasMentor\AlimentosBundle\Controller;
+
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Jazzyweb\AulasMentor\AlimentosBundle\Model\Model;
+    use Jazzyweb\AulasMentor\AlimentosBundle\Config\Config;
+
+    class DefaultController extends Controller
+    {
+
+        public function indexAction()
+        {
+            $params = array(
+            'mensaje' => 'Bienvenido al curso de Symfony2',
+            'fecha' => date('d-m-yyy'),
+            );
+    
+            return
+             $this->render('JazzywebAulasMentorAlimentosBundle:Default:index.html.twig',
+             $params);
+        }
+    
+        public function listarAction()
+        {
+            $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario,
+                            Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+    
+            $params = array(
+            'alimentos' => $m->dameAlimentos(),
+            );
+    
+            return
+             $this->render('JazzywebAulasMentorAlimentosBundle:Default:mostrarAlimentos.html.twig', 
+             $params);
+        
+        }
+    
+        public function insertarAction()
+        {
+            $params = array(
+            'nombre' => '',
+            'energia' => '',
+            'proteina' => '',
+            'hc' => '',
+            'fibra' => '',
+            'grasa' => '',
+            );
+    
+            $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario,
+             Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+    
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+            // comprobar campos formulario
+            if ($m->insertarAlimento($_POST['nombre'], $_POST['energia'], 
+             $_POST['proteina'], $_POST['hc'], $_POST['fibra'], $_POST['grasa'])) {
+                $params['mensaje'] = 'Alimento insertado correctamente';
+            } else {
+                $params = array(
+                'nombre' => $_POST['nombre'],
+                'energia' => $_POST['energia'],
+                'proteina' => $_POST['proteina'],
+                'hc' => $_POST['hc'],
+                'fibra' => $_POST['fibra'],
+                'grasa' => $_POST['grasa'],
+                );
+                $params['mensaje'] = 'No se ha podido insertar el alimento. Revisa el formulario';
+            }
+            }
+    
+            return
+             $this->render('JazzywebAulasMentorAlimentosBundle:Default:formInsertar.html.twig', 
+             $params);
+        
+        }
+    
+        public function buscarPorNombreAction()
+        {
+            $params = array(
+            'nombre' => '',
+            'resultado' => array(),
+            );
+    
+            $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario,
+                            Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+    
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $params['nombre'] = $_POST['nombre'];
+            $params['resultado'] = $m->buscarAlimentosPorNombre($_POST['nombre']);
+            }
+    
+            return 
+             $this->render('JazzywebAulasMentorAlimentosBundle:Default:buscarPorNombre.html.twig',
+             $params);
+        
+        }
+    
+        public function verAction()
+        {
+            if (!isset($_GET['id'])) {
+            throw new Exception('Página no encontrada');
+            }
+    
+            $id = $_GET['id'];
+    
+            $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario,
+                            Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+    
+            $alimento = $m->dameAlimento($id);
+    
+            $params = $alimento;
+    
+            return 
+             $this->render('JazzywebAulasMentorAlimentosBundle:Default:verAlimento.html.twig',
+            $params);
+        
+        }
+
+    }[/php]
+
+Para que podamos utilizar la clase [i]Model[/i] en el controlador sin necesidad de referirnos a ella por su nombre completo, [i]Jazzyweb\AulasMentor\AlimentosBundle\Model\Model[/i], hemos utilizado (línea 6) la directiva [i]use[/i] de [i]PHP 5.3[/i] en dicho fichero. Así podemos utilizar la clase [i]Model[/i] directamente en el controlador.
+
+En la clase [i]Model[/i] puedes observar que,  para el acceso a la base de datos, se hace referencia a unos parámetros de configuración a través de la clase estática [i]Config[/i]. Crea dicha clase en el fichero [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Config/Config.php[/i], con el siguiente código:
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Config/Config.php[/i]
+
+    [php]<?php
+
+    namespace Jazzyweb\AulasMentor\AlimentosBundle\Config;
+    
+    class Config
+    {
+        static public $mvc_bd_hostname = "localhost";
+        static public $mvc_bd_nombre   = "alimentos";
+        static public $mvc_bd_usuario  = "root";
+        static public $mvc_bd_clave    = "root";
+        static public $mvc_vis_css     = "estilo.css";
+    }[/php]
+    
+Esta forma de especificar los parámetros de configuración no es la más "[i]symfónica[/i]", pero es suficiente para los propósitos de este tutorial. En otro tutorial explicaremos como usar la inyección de dependencias para declarar los parámetros en el [i]Symfony2 way[/i].
+
+Como puedes ver hemos comenzado por el 2º paso del flujo básico de desarrollo de páginas con *[i]Symfony2[/i]* es decir, escribir el controlador. En realidad el orden no importa mucho; al final hay que tener los tres pasos resueltos antes de que funcione. Así que vamos a por el primer paso: definir las rutas. Esto lo hacemos editando el fichero  [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml[/i] y plasmando ahí la tabla de rutas. Recuerda:
+
+[code]
+/          (mostrar pantalla inicio)
+/listar    (listar alimentos)
+/insertar  (insertar un alimento)
+/buscar    (buscar alimentos)
+/ver/x     (ver el alimento x)
+[/code]
+
+El archivo [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml[/i] queda así:
+
+   [code] JAMAB_homepage:
+      pattern:  /
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }
+
+    JAMAB_listar:
+      pattern:  /listar
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:listar }
+
+    JAMAB_insertar:
+      pattern:  /insertar
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:insertar }
+      
+    JAMAB_buscar:
+      pattern:  /buscar
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:buscarPorNombre }
+
+    JAMAB_ver:
+      pattern:  /ver/{id}
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:ver }
+[/code]
+
+La última ruta ([i]JAMAB_ver[/i]) utiliza una funcionalidad muy interesante del sistema de [i]Routing[/i] de [i]Symfony2[/i] que se utiliza continuamente. Se trata de introducir en la propia ruta los parámetros que se pasarán por [i]GET[/i] al servidor web. Los valores encerrados entre llaves, en nuestro caso [i]{id}[/i], se denominan [i]placeholders[/i]. El sistema de [i]Routing[/i] parsea las [i]URL[/i]'s que coincidan con la ruta y asigna el valor que venga en la posición de cada [i]placeholder[/i] a una variable denominada con el nombre especificado entre las llaves. Veámoslo con un ejemplo. La siguiente ruta:
+
+  [code] http://localhost/Symfony/web/app_dev.php/alimentos/ver/5
+[/code]
+
+Coincide con la ruta [i]JAMAB_ver[/i] (recuerda que a todas las rutas del [i]bundle[/i] les hemos colocado el prefijo [i]alimentos[/i]). El sistema de [i]Routing[/i], al parsearla, asignará al objeto [i]Request[/i] de [i]Symfony2[/i] una variable denominada [i]id[/i], con un valor [i]5[/i]. Además, esta variable se pasará como argumento al controlador especificado en la ruta, en nuestro caso a [i]JazzywebAulasMentorAlimentosBundle:Default:ver[/i]. Se consigue, además de  usar [i]URL[/i]'s elegantes en la que sólo se utiliza el caracter  "/", eliminar el nombre de las variables de la [i]query string[/i], ocultando información que no es necesaria para el cliente.
+
+[i]Symfony2[/i] mapea esta ruta en una acción llamada [i]verAction($id)[/i] a la que se le pasa el argumento [i]id[/i]. Vamos a cambiar la acción [i]verAction()[/i] para que su código sea más correcto y [i]symfónico[/i]:
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Controller/DefaultController.php[/i]
+
+  [php] <?php
+   ...
+   public function verAction($id)
+   {                
+	   $m = new Model(Config::$mvc_bd_nombre, Config::$mvc_bd_usuario,
+                        Config::$mvc_bd_clave, Config::$mvc_bd_hostname);
+
+	   $alimento = $m->dameAlimento($id);
+	    
+	   if(!$alimento)
+	   {
+	     throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+	   }
+
+	   $params = $alimento;
+
+	   return $this->render('JazzywebAulasMentorAlimentosBundle:Default:verAlimento.html.twig', $params);
+	
+    }   
+    ...[/php]
+
+En la línea 3 hemos introducido un argumento para recoger la variable creada por el sistema de [i]Routing[/i], y en las líneas 9-12 hemos utilizado las excepciones de [i]Symfony2[/i] para tratar el caso de que el registro no exista. Fíjate que de esta manera no necesitamos utilizar la variable superglobal [i]$_GET[/i] de [i]PHP[/i]. 
+
+[nota] En lugar del nombre completo [i]\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException()[/i],   puedes utilizar [i]AccessDeniedHttpException()[/i], si referencias el espacio   de nombre al principio del fichero mediante la directiva [i]use[/i]. [/nota]
+
+[nota]Las acciones [i]buscarPorNombreAction[/i] y [i]insertarAction[/i], hacen uso de   la variable global de [i]PHP[/i] [i]$_POST[/i]. Esto es una mala práctica en    [i]Symfony2[/i], ya que en su lugar se debe utilizar el objeto [i]Request[/i] del   framework, que es una abstracción de la petición ([i]request[/i]) [i]HTTP[/i] en la que   se han "limpiado" los valores de sus atributos de posibles cadenas potencialmente   peligrosas (código malicioso). Será la primera y ultima vez que haremos esto.    Sirva como ejemplo de que  el hecho de utilizar un framework ayuda pero no es    suficiente para generar un código de calidad. Es el programador quien, conociendo   y aplicando las buenas prácticas de programación, produce un buen código. [/nota]
+
+Y ahora a por las plantillas. 
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/verAlimento.html.twig[/i]
+
+[code]     {% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+
+     {% block contenido %}
+    
+     <h1>{{ nombre }}</h1>
+     <table border="1">
+    
+         <tr>
+             <td>Energía</td>
+             <td>{{ energia }} </td>
+         </tr>
+         <tr>
+             <td>Proteina</td>
+             <td>{{ proteina }}</td>
+         </tr>
+         <tr>
+             <td>Hidratos de Carbono</td>
+             <td>{{ hidratocarbono }}</td>
+         </tr>
+         <tr>
+             <td>Fibra</td>
+             <td>{{ fibra }}</td>
+         </tr>
+         <tr>
+             <td>Grasa total</td>
+             <td> {{grasatotal}} </td>
+         </tr>
+     </table>
+    
+    {% endblock %}[/code]
+
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/mostrarAlimentos.html.twig[/i]
+
+    [code]{% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+    
+     {% block contenido %}
+    
+     <table>
+         <tr>
+             <th>alimento (por 100g)</th>
+             <th>energía (Kcal)</th>
+             <th>grasa (g)</th>
+         </tr>
+         {% for alimento in alimentos %}
+         <tr>
+             <td><a href="{{ path('JAMAB_ver', {'id': alimento.id}) }}">{{alimento.nombre}}</a></td>
+             <td>{{ alimento.energia }}</td>
+             <td>{{ alimento.grasatotal }}</td>
+         </tr>
+         {% endfor %}
+    
+     </table>
+    
+     {% endblock %}  [/code]  
+
+
+En esta última plantilla hemos introducido tres elementos nuevos del sistema [i]twig[/i]:
+[list]
+[*] La navegación por un array. Fíjate que la acción  que utiliza esta plantilla,  [i]listarAction()[/i], le pasa como parámetros una colección (array) de alimentos  devueltos por el método [i]dameAlimentos[/i] del modelo. Las colecciones, es   decir los arrays indexados (no asociativos), pueden ser iterados en una   plantilla [i]twig[/i] mediante la construcción [i]{% for dato in datos %}[/i] -  [i]{% endfor %}[/i],  donde [i]datos[/i] es el array que llega a la plantilla.
+
+[*] Por otro lado, cada elemento del array [i]alimentos[/i] es un array asociativo.  Sus elementos pueden ser accedido mediante la notación [i]dato.propiedad[/i].   Una característica interesante de esta notación es que se puede utilizar no  solo con arrays asociativos, sino con objetos provistos de [i]getters[/i] sobre sus  propiedades. Este hecho se utiliza intensa y extensamente en [i]Symfony2[/i].
+  
+[*] Por último se utiliza la función [i]path()[/i] de [i]twig[/i], que sirve para calcular  la [i]URL[/i] correcta a partir del nombre de la ruta. Así cuando cambiemos la   aplicación de servidor o de ubicación, la ruta será calculada correctamente.   Los argumentos de la ruta se pasan a la función [i]path[/i] usando la sintaxis   de un objeto [i]JSON[/i], es decir: [i]{ 'param1': val1, ..., `paramN': valN }[/i].Esta función será otro de los elementos omnipresentes en cualquier aplicación  web construida con [i]Symfony2[/i] y [i]twig[/i].
+[/list]
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/Default/formInsertar.html.twig[/i]
+  
+  [code]  {% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+    
+     {% block contenido %}
+    
+    {% if mensaje is defined %}
+    <b><span style="color: red;">{{ mensaje }}</span></b>
+    {% endif %}
+    <br/>
+    <form name="formInsertar" action="{{ path('JAMAB_insertar') }}" method="POST">
+        <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Energía (Kcal)</th>
+                <th>Proteina (g)</th>
+                <th>H. de carbono (g)</th>
+                <th>Fibra (g)</th>
+                <th>Grasa total (g)</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="nombre" value="{{ nombre }}" /></td>
+                <td><input type="text" name="energia" value="{{ energia }}" /></td>
+                <td><input type="text" name="proteina" value="{{ proteina }}" /></td>
+                <td><input type="text" name="hc" value="{{ hc }}" /></td>
+                <td><input type="text" name="fibra" value="{{ fibra }}" /></td>
+                <td><input type="text" name="grasa" value="{{ grasa }}" /></td>
+            </tr>
+    
+        </table>
+        <input type="submit" value="insertar" name="insertar" />
+    </form>
+    * Los valores deben referirse a 100 g del alimento
+    
+    {% endblock %}[/code]
+  
+En esta plantilla hemos introducido otro elemento nuevo; la construcción [i]{% if data is defined %}[/i] - [i]{% endif %}[/i], que como puedes deducir, comprueba si la variable [i]data[/i] ha sido definida. 
+
+También hemos vuelto a utilizar la función [i]path[/i]  para escribir el parámetro [i]action[/i] del formulario [i]HTML[/i].
+
+Llegados a este punto hemos de aclarar que [i]Symfony2[/i] proporciona un potente servicio para la construcción de formularios que no estudiaremos en este tutorial. Por lo pronto nos quedamos con esta manera sencilla y directa de crear formularios.
+  
+Vamos a por la siguiente plantilla:
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/Default/buscarPorNombre.html.twig[/i]
+   
+   [code] {% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+    
+     {% block contenido %}
+    
+    <form name="formBusqueda" action="{{ path('JAMAB_buscar') }}" method="POST">
+    
+         <table>
+             <tr>
+                 <td>nombre alimento:</td>
+                 <td><input type="text" name="nombre" value="{{ nombre }}">(puedes utilizar '%' como comodín)</td>
+    
+                 <td><input type="submit" value="buscar"></td>
+             </tr>
+         </table>
+    
+         </table>
+    
+     </form>
+    
+     {% if resultado %}
+     {% include 'JazzywebAulasMentorAlimentosBundle:Default:_tablaAlimentos.html.twig' with {'alimentos': resultado} %}
+     {% endif %}
+    
+    {% endblock %}[/code]
+
+Otro elemento nuevo; la inclusión de plantillas en otras plantillas. Esto lo hacemos en la línea 21 mediante la función [i]include[/i] de [i]twig[/i], la cual requiere como argumento el nombre lógico de la plantilla que se desea incluir. Los parámetros que necesita la plantilla incluida se pasan en un array con sintaxis [i]JSON[/i] despues del token [i]with[/i].
+
+Este mecanismo de inclusión combinado con la herencia proporciona una gran flexibilidad al programador, otorgándole las herramientas necesarias para elaborar un código bien organizado y reusable.
+
+La plantilla incluida es la siguiente:
+
+ [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/Default/_tablaAlimentos.html.twig[/i]
+  
+    [code]<table>
+         <tr>
+             <th>alimento (por 100g)</th>
+             <th>energía (Kcal)</th>
+             <th>grasa (g)</th>
+         </tr>
+         {% for alimento in alimentos %}
+         <tr>
+             <td>{{ alimento.nombre }}</td>
+             <td>{{ alimento.energia }}</td>
+             <td>{{ alimento.grasatotal }}</td>
+         </tr>
+         {% endfor %}
+    
+     </table>[/code]
+
+Y, por último, utilizando esta última plantilla que pinta un listado de alimentos, podemos simplificar la plantilla [i]mostrarAlimentos.html.twig[/i] evitando la repetición de código innecesariamente.
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/mostrarAlimentos.html.twig[/i]
+
+   [code] {% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+    
+    {% block contenido %}
+    
+    {% include 'JazzywebAulasMentorAlimentosBundle:Default:_tablaAlimentos.html.twig' with {'alimentos': alimentos} %}
+    
+    {% endblock %}   [/code]
+    
+Y con esto ya tenemos la aplicación de gestión de alimentos terminada y construida en [i]Symfony2[/i]. Aún puede hacerse de un modo más symfónico, utilizando los servicios de persistencia de datos ([i]Doctrine[/i]), de creación de formularios y de validación de datos. Pero la intención de este tutorial es mostrar los elementos básicos para la creación de páginas en [i]Symfony2[/i], y por tanto vamos a dar por buena la aplicación tal y como está.
+
+Únicamente faltaría usar la función [i]path()[/i] de [i]twig[/i] para completar los enlaces de los menús. Pero eso vamos a dejar que lo hagas tú.
+
+
+[h3]El tutorial en chuletas[/h3]
+
+
+[h4]Generar un [i]bundle[/i][/h4]
+
+   [code]php app/console generate:bundle[/code]
+
+[h4]Registrar un [i]bundle[/i][/h4]
+
+Se hace en el archivo [i]app/KernelApp.php[/i], de la siguiente manera:
+
+  [code] ...
+   new Jazzyweb\AulasMentor\AlimentosBundle\JazzywebAulasMentorAlimentosBundle(),
+   ...[/code]
+   
+[h4]Enlazar el [i]routing[/i] de un [i]bundle[/i] con el [i]routing[/i] general de la aplicación[/h4]
+
+Se hace añadiendo al archivo [i]app/config/routing.yml[/i] (o [i]routing_{env}.yml[/i]):
+
+ [code]  JazzywebAulasMentorAlimentosBundle:
+   resource: "@JazzywebAulasMentorAlimentosBundle/Resources/config/routing.yml"
+   prefix:   /[/code]
+
+[h4]Pasos para acoplar un [i]bundle[/i] al framework[/h4]
+
+1. Registrar el espacio de nombre en el sistema de autocarga. Este paso no es    necesario si ubicamos al [i]bundle[/i] en el directorio [i]src[/i].
+
+2. Registrar al bundle en el fichero [i]app/AppKernel.php[/i]. Esta operación se   puede hacer automáticamente a través del generador interactivo de [i]bundles[/i],   pero si fallase por alguna razón (por ejemplo que los permisos de dicho archivo   no estén bien definidos). Habría que hacerlo a mano.
+
+3. Importar las tablas de enrutamiento del [i]bundle[/i] en la tabla de enrutamiento   de la aplicación.
+   
+[h4]Flujo para la creación de páginas en [i]Symfony2[/i][/h4]
+
+1. Creación de la ruta en [i]config/Resources/routing.yml[/i] del [i]bundle[/i], o   directamente en [i]app/config/routing.yml[/i].
+
+2. Creación de la acción en el controlador correspondiente en una clase que debe   ubicarse en un fichero del directorio [i]Controllers[/i] del [i]bundle[/i].
+   
+3. Creación de una plantilla en el directorio [i]Resources/view[/i].
+
+[h4]Nombres lógicos de acciones[/h4]
+
+[i]NombreBundle:NombreControlador:NombreAcción[/i].
+
+Ejemplo:
+
+[i]AcmeDemoBundle:Secured:login[/i] se mapea en la acción [i]loginAction()[/i] de la
+clase [i]Acme\DemoBundle\Controller\SecuredController[/i] definida (normalmente) en
+[i]src/Acme/DemoBundle/Controller/SecuredController.php[/i].
+
+[h4]Sintaxis básica de [i]twig[/i][/h4]
+
+[i]{{ parametro }}[/i] -> pinta el valor de la variable [i]parametro[/i].
+
+[i]{% comando %} ... {% endcomando %}[/i] -> ejecuta la acción expresada por 
+[i]comando[/i] en el bloque definido desde su declaración hasta [i]{% endcomando%}[/i].
+
+[h4]Herencia en plantilla [i]twig[/i][/h4]
+
+Esta plantilla hereda de [i]JazzywebAulasMentorAlimentosBundle::layout.html.twig[/i], y modifica el bloque [i]contenido[/i] que allí se declara.
+
+  [code] {% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+
+   {% block contenido %}
+   
+   <h1>Inicio</h1>
+   <h3> Fecha: {{fecha}}  </h3>
+   {{mensaje}}
+
+   {% endblock %}[/code]
+   
+[h4]Función [i]path[/i] de [i]twig[/i][/h4
+
+ [code]  {{ path('JAMAB_listar', {'id': alimento.id}) }}[/code]
+   
+[h4]Iterar una colección (array) de datoso en [i]twig[/i][/h4]
+   
+  [code] {% for alimento in alimentos %}
+     <tr>
+         <td><a href="{{ path('JAMAB_listar', {'id': alimento.id}) }}">{{alimento.nombre}}</a></td>
+         <td>{{ alimento.energia }}</td>
+         <td>{{ alimento.grasatotal }}</td>
+     </tr>
+   {% endfor %}
+   
+[h4]Código condicional en [i]twig[/i][/h4]
+    
+  [code] {% if data is defined %} 
+    ...
+   {% endif %}[/code][/code]
+   
+[h4]Inclusión de plantillas en [i]twig[/i][/h4]
+
+   [code]{% include 'JazzywebAulasMentorAlimentosBundle:Default:_tablaAlimentos.html.twig' with {'resultado': resultado} %}[/code]
+ 
+[h4]Estructura básica de una ruta[/h4]
+
+   [code] nombre_unico_de_la_ruta:
+      pattern:  /el/patron/de/la/ruta/{param1}/{param2}/.../{paramN}
+      defaults: { _controller: NombreLogico:del:Controlador }[/code]
+      
+    Ejemplo:
+    
+   [code] JAMAB_ver:
+      pattern:  /ver/{id}
+      defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:ver }[/code]
+  
+  ____________________________________________________________________________________
+
+Este trabajo, por Juan David Rodríguez García<juanda at ite.educacion.es>, se encuentra bajo una  Licencia [url=http://creativecommons.org/licenses/by-nc-sa/3.0/]Creative Commons Reconocimiento-NoComercial-CompartirIgual 3.0 Unported[/url].
+
+[img]http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png[/img]
+
+[nota]El original de este tutorial puedes encontrarlo en: [url=http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2/]http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2[/url]/[/nota]
+

@@ -1,0 +1,619 @@
+[h3]La aplicación [b]gestión de alimentos[/b] en [i]Symfony2[/i][/h3]
+
+Y llegó el momento de ponerse a cocinar código.
+
+[h4]Generación de un [i]Bundle[/i][/h4]
+
+La primera idea que debe quedar clara, expresada de manera simplista, es que 
+"[b]todo es un bundle[/b]" en [i]Symfony2[/i]. Por tanto, si queremos desarrollar una
+aplicación necesitaremos, por lo menos, tener un [i]bundle[/i] para alojar el código de
+la misma. Comencemos por ahí. El siguiente comando de [i]Symfony2[/i] nos ayuda a 
+generar el esqueleto de un bundle de manera interactiva:
+ 
+[code] php app/console generate:bundle[/code]
+   
+A cada pregunta que nos hace le acompaña una pequeña ayuda. En primer lugar nos
+pregunta por el espacio de nombre que compartiran las clases del [i]bundle[/i]. La 
+recomendación, como se dice en el texto de ayuda del comando, es que comience por
+el nombre del fabricante del [i]bundle[/i], el nombre del proyecto o del cliente, 
+seguido, opcionalemente, por una o más categorías, y finalizar con el nombre del
+[i]bundle[/i] seguido del sufijo [i]Bundle[/i]. Es decir el nombre completo del espacio
+de nombres del [i]bundle[/i] debe seguir el siguiente patrón:
+
+[code]Fabricante/categoria1/categoria2/../categoriaN/nombrebundleBundle[/code]
+
+Ilustremos esto con varios ejemplos de nombres de [i]bundles[/i] válidos:
+
+ [code]  AulasMentor/AlimentosBundle
+   AulasMentor/Tutorial/AlimentosBundle
+   AulasMentor/CursoSf2/Tutorial/AlimentosBundle
+   Jazzyweb/AulasMentor/AlimentosBundle[/code]
+
+Nos quedaremos con el último de los nombres para el bundle que vamos a 
+construir. Con este nombre se quiere expresar algo así [i]como[/i] que el [i]bundle[/i]
+[i]AlimentosBundle[/i] ha sido creado por [i]Jazzyweb[/i] (una empresa ficticia) para
+el cliente [i]AulasMentor[/i]. Como ves, cualquier nombre vale siempre que contenga
+un nombre de fabricante ([i]vendor name[/i]) y un nombre de [i]bundle[/i]. En medio podemos
+poner lo que queramos para organizar nuestro trabajo.
+
+Introduce [i]Jazzyweb/AulasMentor/AlimentosBundle[/i] como espacio de nombres del 
+[i]bundle[/i]. A continuación nos pregunta por el nombre del [i]bundle[/i]. Y nos ofrece
+una recomendación que es el mismo nombre del espacio de nombres anterior pero sin
+los separadores " /". El nombre del [i]bundle[/i] es importante pues, en ocasiones, 
+hay que referirse al [i]bundle[/i] por este nombre.
+
+Presiona [i]enter[/i] para aceptar la sugerencia.
+
+El próximo paso es asignarle una ubicación en la estructura de directorios del proyecto. La flexibilidad de [i]Symfony2[/i] permite que lo coloques donde quieras.Pero es muy recomendable que lo coloques en el directorio [i]src[/i], ya que está pensado para alojar nuestro código. Si lo haces así, te ahorrarás tener que incluir una línea de código en el fichero [i]app/autoload.php[/i] para registrar elespacio de nombre en el sistema de autocarga de clases. Esto último es así porque en dicho fichero ya se ha contemplado que todas las clases que se aloje en [i]src[/i]
+sean autocargadas asignándole como espacio de nombre raíz el mismo nombre que la estructura de directorios computada desde [i]src[/i]. 
+
+Presiona [i]enter[/i] para aceptar la sugerencia. Cuando termines de generar el *[i]bundle[/i]* verás como se ha creado en [i]src[/i] el directorio [i]Jazzyweb/AulasMentor/AlimentosBundle[/i], es decir un directorio que tiene lamisma estructura que el espacio de nombres que hemos asignado al [i]bundle[/i]. Estoes lo que se quiere decir de manera genérica en el párrafo anterior.
+
+Los [i]bundles[/i] llevarán asociados algo de configuración. Como mínimo será necesario configurar las rutas que mapean las [i]URL[/i]'s en acciones del [i]bundle[/i]. [i]Symfony2[/i] admite 4 formas de representar las configuraciones: con ficheros [i]XML[/i], [i]YML[/i] o [i]PHP[/i], y mediante anotaciones, que es una manera de expresar parámetros de configuración en el propio código funcional aprovechando para ello los comentarios de [i]PHP[/i].
+
+Más adelante tendremos ocasión de utilizar las anotaciones y las entenderás mejor. Llegados a este punto hemos de decir que la elección es una cuestión de gusto; discutir con alguien acerca de cual es la mejor opción sería una pérdida de tiempo. Para el caso de la configuración de los [i]bundles[/i] (prácticamente para definir rutas como veremos después) hemos elegido los fichero [i]YAML[/i] como formato para la configuración.
+
+Selecciona (escribe) [i]yml[/i] como formato de configuración.
+
+Por último contesta [i]yes[/i] a la pregunta de si quieres generar la estructura completa. Esta opción generará algunos directorios y archivos extra que siguen las recomendaciones de [i]Symfony2[/i] para alojar código. Es posible que no los utilices, pero no hacen "daño" y sugieren como debe organizarse el código. No obstante el programador tiene bastante libertad a la hora de organizar los archivos del [i]bundle[/i] como quiera.
+
+Confirma la generación del código. Una vez generado, el asistente te realizará dos preguntas más. Primera pregunta: ¿quieres actualizar automáticamente el [i]Kernel[/i]? y segunda pregunta ¿quieres actualizar directamente el [i]routing[/i]? Contesta a las dos afirmativamente. Vamos a ver con más detalle las consecuencias de estas actualizaciones automáticas.
+
+Por una parte el [i]bundle[/i], como ya hemos explicado, es un bloque desacoplado y reutilizable de código que agrupa a una serie de funcionalidades. Si queremos utilizarlo en nuestro proyecto debemos "notificarlo" al framework. Es decir, hemos de "engancharlo". Esto se hace registrándolo en el archivo [i]app/AppKernel.php[/i]. La primera actualización automática ha realizado dicho registro. Abre ese archivo y fíjate como al final del método [i]registerBundles()[/i]
+aparece la siguiente línea:
+
+[php]   ...
+   new Jazzyweb\AulasMentor\AlimentosBundle\JazzywebAulasMentorAlimentosBundle(),
+   ...
+[/php]
+
+Dicha línea ha sido insertada automáticamente como consecuencia de haber respondido afirmativamente a la primera pregunta. El cometido de la línea es registrar el [i]bundle[/i] recien creado en el framework para poder hacer uso del mismo.
+
+La segunda actualización automática "enlaza" la tabla enrutamiento general de la aplicación con la tabla de enrutamiento particular del [i]bundle[/i]. La tabla de enrutamiento es la responsable de indicar al framework como deben mapearse las [i]URL[/i]'s en acciones [i]PHP[/i]. Para ver como se ha realizado este enlace mira el fichero [i]app/config/routing.yml[/i]:
+
+  [code] JazzywebAulasMentorAlimentosBundle:
+    resource: "@JazzywebAulasMentorAlimentosBundle/Resources/config/routing.yml"
+    prefix:   /[/code]
+
+Estas líneas han sido introducidas automáticamente como consecuencia de contestar afirmativamente a la segunda pregunta. Observa que el apartado [i]resource[/i] es la dirección en el sistema de ficheros de la tabla de enrutamiento propia del [i]bundle[/i] que acabamos de crear. [i]Symfony2[/i] sabe convertir [i]@JazzywebAulasMentorAlimentosBundle[/i] en la ubicación del  [i]bundle[/i] pues está debidamente registrado. 
+
+Es importante que conozcas como se acopla un [i]bundle[/i] a la aplicación, pues si falla la actualización automática del [i]KernelApp.php[/i] y/o del [i]routing.yml[/i], debes realizarlas manualmente.
+
+Ahora puedes echarle un vistazo al fichero [i]routing.yml[/i] del [i]bundle[/i] ([i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/config/routing.yml[/i]). Verás que existe una ruta mapeada contra una acción. Después explicaremos los detalles de la ruta. Esta última ruta sirve para probar el [i]bundle[/i]. Así que accede desde tu navegador web a la siguiente [i]URL[/i] (que es la que se corresponde con esta ruta de prueba)
+   
+   [code]http://localhost/Symfony/web/app_dev.php/hello/alberto[/code]
+   
+Si todo va bien, obtendrás como respuesta un saludo. Puedes cambiar el nombre del final de la ruta.
+
+Resumiendo: Para desarrollar nuestra aplicación hemos de contar al menos con un [i]bundle[/i] para escribir el código. Según la complejidad de la aplicación será más o menos adecuado organizar el código en varios [i]bundles[/i]. El criterio a seguir es el de agrupar en cada [i]bundle[/i] funcionalidades similares o del mismo tipo.
+
+Los bundles son bloques desacoplados y tienen asociado un espacio de nombre. Para acoplar un bundle al framework hay que :
+
+1. Registrar el espacio de nombre en el sistema de autocarga (fichero    ``app/autoload.php``. Este paso no es necesario si ubicamos al *bundle* en el   directorio ``src``.
+
+2. Registrar al bundle en el fichero [i]app/AppKernel.php[/i]. Esta operación se  puede hacer automáticamente a través del generador interactivo de [i]bundles[/i],   pero si fallase por alguna razón (por ejemplo que los permisos de dicho archivo   no estén bien definidos). Habría que hacerlo a mano.
+
+3. Importar las tablas de enrutamiento del [i]bundle[/i] en la tabla de enrutamiento   de la aplicación.
+
+[h4]Anatomía de un [i]Bundle[/i][/h4]
+
+Si has seguido las indicaciones que hemos dado en este tutorial, debes tener en tu directorio [i]src[/i] dos directorios: [i]Jazzyweb[/i] y [i]Acme[/i] . El primero se corresponde con el [i]bundle[/i] que acabamos de crear, y el segundo es un ejemplo que viene de serie con la distribución standard de [i]Symfony2[/i] y que contiene el código de la demo con la que has jugado hace un rato. Vamos a utilizar este último para realizar la [b]disección[/b] de un [i]bundle[/i], ya que está más rellenito de código  que nuestro recien horneado y esquelético [i]bundle[/i]. 
+
+    [code]Acme/
+    &#9492;&#9472;&#9472; DemoBundle
+	&#9500;&#9472;&#9472; AcmeDemoBundle.php
+	&#9500;&#9472;&#9472; Controller
+	&#9474;   &#9500;&#9472;&#9472; DemoController.php
+	&#9474;   &#9500;&#9472;&#9472; SecuredController.php
+	&#9474;   &#9492;&#9472;&#9472; WelcomeController.php
+	&#9500;&#9472;&#9472; ControllerListener.php
+	&#9500;&#9472;&#9472; DependencyInjection
+	&#9474;   &#9492;&#9472;&#9472; AcmeDemoExtension.php
+	&#9500;&#9472;&#9472; Form
+	&#9474;   &#9492;&#9472;&#9472; ContactType.php
+	&#9500;&#9472;&#9472; Resources
+	&#9474;   &#9500;&#9472;&#9472; config
+	&#9474;   &#9474;   &#9492;&#9472;&#9472; services.xml
+	&#9474;   &#9500;&#9472;&#9472; public
+	&#9474;   &#9474;   &#9500;&#9472;&#9472; css
+	&#9474;   &#9474;   &#9474;   &#9492;&#9472;&#9472; demo.css
+	&#9474;   &#9474;   &#9492;&#9472;&#9472; images
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; blue-arrow.png
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; field-background.gif
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; logo.gif
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; search.png
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; welcome-configure.gif
+	&#9474;   &#9474;       &#9500;&#9472;&#9472; welcome-demo.gif
+	&#9474;   &#9474;       &#9492;&#9472;&#9472; welcome-quick-tour.gif
+	&#9474;   &#9492;&#9472;&#9472; views
+	&#9474;       &#9500;&#9472;&#9472; Demo
+	&#9474;       &#9474;   &#9500;&#9472;&#9472; contact.html.twig
+	&#9474;       &#9474;   &#9500;&#9472;&#9472; hello.html.twig
+	&#9474;       &#9474;   &#9492;&#9472;&#9472; index.html.twig
+	&#9474;       &#9500;&#9472;&#9472; layout.html.twig
+	&#9474;       &#9500;&#9472;&#9472; Secured
+	&#9474;       &#9474;   &#9500;&#9472;&#9472; helloadmin.html.twig
+	&#9474;       &#9474;   &#9500;&#9472;&#9472; hello.html.twig
+	&#9474;       &#9474;   &#9500;&#9472;&#9472; layout.html.twig
+	&#9474;       &#9474;   &#9492;&#9472;&#9472; login.html.twig
+	&#9474;       &#9492;&#9472;&#9472; Welcome
+	&#9474;           &#9492;&#9472;&#9472; index.html.twig
+	&#9500;&#9472;&#9472; Tests
+	&#9474;   &#9492;&#9472;&#9472; Controller
+	&#9474;       &#9492;&#9472;&#9472; DemoControllerTest.php
+	&#9492;&#9472;&#9472; Twig
+	    &#9492;&#9472;&#9472; Extension
+		&#9492;&#9472;&#9472; DemoExtension.php[/code]
+[list]
+
+
+[*] [i]AcmeDemoBundle.php[/i] es una clase que extiende a   [i]Symfony\Component\HttpKernel\Bundle\Bundle[/i] y que define al [i]bundle[/i].   Se utiliza en el proceso de registro del mismo (recuerda, en el fichero   [i]app/AppKernel.php[/i]). Todos los [i]bundles[/i] deben incorporar esta clase (bueno,  el nombre cambiará según el nombre del [i]bundle[/i]).
+
+[*] [i]Controller[/i] es el directorio donde se deben colocar los controladores con las  distintas acciones del [i]bundle[/i]. Las acciones son las funciones (o métodos)  Lo lógico y recomendado, es crear una clase  [i]Controller[/i] por cada grupo de funcionalidades. Pero no es una exigencia, si   quieres puedes colocar todas tus acciones en el mismo controlador. Cuando se  genera un [i]bundle[/i] se crea el controlador [i]DefaultController[/i].
+
+[*] [i]Dependency Injection[/i]. Una de las características más sobresaliente de   *[i]Symfony2[/i]* es el uso intensivo que hace de la *[i]Inyección de Dependencias[/i]*, un  potente patrón de diseño mediante el que se facilita la creación y configuración  de objetos que prestan servicios en una aplicación gracias a la gestión   automática de sus dependencias. Contribuye a crear un código más  desacoplado y  coherente. En este [url=http://juandarodriguez.es/tutoriales-2/inyeccion-de-dependencias-en-symfony2/]tutorial[/url] se explica con bastante detalle como se trata la Inyección de dependencias en [i]Symfony2[/i]. Aunque no es un patrón complicado, es  dificil de explicar con precisión y  claridad.   [i]Symfony2[/i] nos ofrece dos maneras de "cargar" la configuración de las   dependencias y los servicios creados. Una más sencilla y directa, y otra más  elaborada y apropiada para el caso en que nuestro [i]bundle[/i] vaya a ser   distribuido con la intención de que se utilice en otros proyectos [i]Symfony2[/i]. En  este directorio se ubican las  clases relacionadas con este segundo método de  gestionar las dependencias.
+
+[*] [i]Resources[/i], es decir, recursos. Entendemos por recursos: los ficheros de   configuración del [i]bundle[/i] (directorio [i]config[/i]), los [i]assets[/i] que requiere  el [i]bundle[/i] para enviar en sus respuestas (directorio [i]public[/i]) y las   plantillas con las que se [i]renderizan[/i] (pintan) el resultado de las acciones de  los controladores (directorio [i]view[/i]). Fíjate como en este [i]bundle[/i],  las plantillas están  organizadas en tres directorios ([i]Demo[/i], [i]Secured[/i] y   [i]Welcome[/i]) cuyos nombres coinciden con los de los controladores.   
+
+[*] [i]Test[/i], es el directorio donde viven las pruebas unitarias y funcionales del  [i]bundle[/i].
+
+[/list]
+
+Estos son los directorios más típicos de cualquier [i]bundle[/i], de hecho son los que se generan automáticamente con el comando [i]app/console generate:bundle[/i]. Sin embargo un [i]bundle[/i] puede tener muchos más directorios y ficheros, organizados como su creador crea conveniente. En el caso del [i]bundle[/i] [i]AcmeDemoBundle[/i], puedes ver los siguientes "extras":
+
+[list]
+[*] [i]Form[/i] es el directorio donde se colocarán las clases que definen los   formularios de la aplicación.
+
+[*] [i]ControllerListener.php[/i]  describe un [i]event listener[/i] que es un mecanismo muy   adecuado de extender y alterar el flujo del framework sin  tener que tocar el   código original del componente del framework que utiliza dicho sistema. Se trata   de una característica avanzada de [i]Symfony2[/i] raramente utilizada cuando uno se  esta iniciando.
+
+[*] [i]Twig[/i] es un directorio propio de este [i]bundle[/i], en el que se ha implementado  una extensión del sistema de plantillas.
+  
+[/list]
+
+Ahora ya nos encontramos con un mínimo bagaje para emprender el desarrollo del [i]bundle[/i]  [i]JazzywebAulasMentorAlimentosBundle[/i] y, por tanto de la aplicación.
+
+
+
+[h4]Flujo básico de creación de páginas en [i]Symfony2[/i][/h4]
+
+La creación de páginas web con [i]Symfony2[/i] involucra tres pasos:
+
+1. Creación de la ruta que mapea la [i]URL[/i] de la página en una acción de algún    controlador. Dicha ruta se registra en el archivo    [i]config/Resources/routing.yml[/i] del [i]bundle[/i], que a su vez debe estar   correctamente importado en el archivo de rutas general de la aplicación   [i]app/config/routing[/i].
+
+2. Creación de dicha acción en el controlador correspondiente. La acción, haciendo   uso del modelo, realizará las operaciones necesarias y obtendrá los datos crudos   ([i]raw[/i]), es decir sin ningún tipo de formato, que facilitará a una plantilla para   ser pintados (renderizados). El código de los controladores debe ubicarse en   el directorio [i]Controllers[/i] del [i]bundle[/i].
+   
+3. Creación de dicha plantilla. Esto se hace en el directorio [i]Resources/view[/i].    Con el fin de organizar bien las plantillas, es recomendable crear un    directorio con el nombre de cada controlador. También es muy recomendable  utilizar [i]Twig[/i] como sistema de plantillas, aunque también se puede utilizar   [i]PHP[/i].
+
+Estos pasos son, por supuesto, una guía general y mínima que debemos seguir en la creación de las páginas de nuestra aplicación. No obstante, en muchos casos tendremos que realizar otras operaciones que se salen de este flujo y que tienen que ver más con la construcción del modelo de la aplicación.
+
+[h4]Definición de las rutas del [i]bundle[/i][/h4]
+
+Ya hemos visto que en [i]Symfony2[/i] todas las peticiones a la aplicación se realizan a través de un script [i]PHP[/i] que se llama controlador frontal ([i]app.php[/i]). Este script "sabe" lo que debe devolver como respuesta al usuario "mirando" la *ruta* que lo acompaña en cada petición. 
+
+Cada ruta en [i]Symfony2[/i] consiste en un conjunto de parámetros separados por el caracter "/". Ejemplos de [i]URL[/i]'s con rutas de [i]Symfony2[/i]  serían:
+
+  [code] http://tu.servidor/app.php
+   http://tu.servidor/app.php/listar
+   http://tu.servidor/app.php/ver/4[/code]
+
+Las rutas correspondientes serían:
+
+  [code] 
+   /
+   /listar
+   /ver/4[/code]
+
+Es decir, los parámetros que siguen al controlador frontal. Esta forma de pasar parámetros a través de la [i]URL[/i] mejora en varios aspectos a la clásica [i]query string[/i] del tipo:
+
+ [code]?param1=val1&param2=val2&...&paramN=valN[/code]
+
+En primer lugar el usuario que utiliza el navegador “siente” que la [i]URL[/i] que aparece en la barra de direcciones forma parte de la aplicación que está utilizando. Por tanto, cualquier [i]URL[/i] llena de carácteres extraños y demasiado larga redunda en una degradación estética. En segundo lugar y más allá de cuestiones estéticas, cuando utilizamos query strings clásicas estamos dando información innecesaria al usuario, ya que el nombre de los parámetros ([i]paramX[/i]) es algo que tiene sentido únicamente para la aplicación en el servidor. Esta información extra, además de dar lugar a [i]URL[/i]’s horribles, supone un problema de seguridad, ya que el usuario podría utilizarlas para sacar conclusiones acerca de la aplicación y utilizarla para comprometerla.
+
+El aspecto de las [i]URL[/i]'s puede mejorar aún más si utilizamos el módulo [i]Rewrite[/i] del servidor web, ya que también podemos eliminar el nombre del controlador frontal  [i]app.php[/i]). Así además de mejorar el estilo de la [i]URL[/i], ocultamos al usuario información acerca del lenguaje de programación que estamos utilizando en el servidor.
+
+Nos quedarían [i]URL[/i]'s de este tipo:
+
+   [code]http://tu.servidor/
+   http://tu.servidor/listar
+   http://tu.servidor/ver/4[/code]
+
+¡Mucho más legibles y elegantes!
+
+[nota]En el directorio ``web`` existe un fichero ``.htaccess`` con el siguiente contenido:
+      
+      [code]<IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ app.php [QSA,L]
+      </IfModule>[/code]
+   
+ La función de dicho fichero es, precisamente, reescribir las rutas anteponiendo   ``app.php``, de manera que no sea necesario especificar el controlador frontal  en la *URL*. Para que esto funcione es necesario que el servidor web tenga   instalado el módulo ``Rewrite``, y permita el cambio de directivas a través  de ficheros ``.htaccess``. [/nota]
+
+La siguiente tabla muestra las rutas que definiremos en nuestra aplicación y la acción que deben disparar.
+
+[code]
+/          (mostrar pantalla inicio)
+/listar    (listar alimentos)
+/insertar  (insertar un alimento)
+/buscar    (buscar alimentos)
+/ver/x     (ver el alimento x)
+[/code]
+
+En [i]Symfony2[/i] las rutas se definen en el archivo [i]app/config/routing.ym[/i]l. Para que los [i]bundles[/i] no pierdan la autonomía que debe caracterizarlos, las rutas que se mapean en un controlador de un determinado [i]bundle[/i] deberían definirse dentro del propio [i]bundle[/i]. Concretamente en el archivo [i]Resources/config/routing.yml[/i] del [i]bundle[/i]. Y para hacerlas disponibles a la aplicación, se importa este último fichero en [i]app/config/routing.yml[/i].
+
+[nota]
+ Aunque el sitio recomendado para ubicar el fichero [i]routing.yml[/i] de un  [i]bundle[/i] es [i]Resources/config[/i], [i]Symfony2[/i] no lo exige, ya que en el archivo [i]app/config/routing.yml[/i], que es el que realmente define las rutas, puedes   indicar la ruta concreta de los archivos que se quieren importar.
+[/nota]
+   
+Abre el archivo [i]src/Jazzyweb/AulasMentor/AlimentosBunle/Resources/config/routing.yml[/i]
+y borra las siguientes líneas:
+
+  [code] 
+JazzywebAulasMentorAlimentosBundle_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/code]
+
+Las líneas que acabas de borrar definían la ruta de la acción de ejemplo que se crea automáticamente al generar el bundle. Fíjate en la estructura de la definición de una ruta; consisten en un identificador de la ruta ([i]JazzywebAulasMentorAlimentosBundle_homepage[/i]), 
+que puede ser cualquiera siempre que sea único en todo el framework, el patrón de la ruta ([i]pattern: /hello/{name}[/i]), que describe la estructura de la ruta, y la declaración del controlador sobre el que se mapea la ruta ([i]defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/i]).
+
+Creamos nuestra primera ruta añadiendo al archivo anterior lo siguiente:
+
+   [code]JAMAB_homepage:
+    pattern:  /
+    defaults: { _controller: JazzywebAulasMentorAlimentosBundle:Default:index }[/code]
+   
+Como el nombre de la ruta debe ser único en toda la aplicación, es una buena práctica nombrarlas anteponiendo un prefijo con el nombre del [i]bundle[/i], o con algo que lo identifique. Como el nombre de nuestro [i]bundle[/i] es muy largo, hemos optado por usar como prefijo las siglas [i]JAMAB[/i].
+
+Una vez definida la ruta debemos implementar la acción del controlador especificada en la misma, es decir [i]JazzywebAulasMentorAlimentosBundle:Default:index[/i]. 
+
+[nota]
+   Fíjate en el patrón que se utiliza para especificar la acción del controlador:    [i]JazzywebAulasMentorAlimentosBundle:Default:index[/i]. A esto se le llama en   [i]Symfony2[/i] un nombre lógico. Está compuesto por el nombre del [i]bundle[/i], el   nombre del controlador, y el nombre de la acción separados por el caracter   ":". En este caso, el nombre lógico hace referencia a el método   [i]indexAction()[/i] de una clase [i]PHP[/i] llamada  [i]Jazzyweb\AulasMentor\AlimentosBundle\Controller\DefaultController[/i].   Es decir, hay que añadir el sufijo [i]Controller[/i] al nombre del controlador, y   el sufijo [i]Action[/i] al nombre de la acción.
+[/nota] 
+
+[h4]Creación de la acción en el controlador[/h4]
+  
+Editamos el fichero [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Controller/DefaultController.php[/i], y reescribimos el método [i]indexAction()[/i]:
+  
+ [php] <?php
+    
+    namespace Jazzyweb\AulasMentor\AlimentosBundle\Controller;
+    
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    
+    class DefaultController extends Controller
+    {
+        
+        public function indexAction()
+        {
+            $params = array(
+                'mensaje' => 'Bienvenido al curso de Symfony2',
+                'fecha' => date('d-m-yyy'),
+            );
+            
+            return $this->render('JazzywebAulasMentorAlimentosBundle:Default:index.html.twig',
+            $params);
+        }
+    }[/php]
+   
+Analicemos  el código  anterior.  La clase  [i]DefaultController[/i]  "vive" en  el espacio de  nombres [i]Jazzyweb\AulasMentor\AlimentosBundle\Controller[/i],  por lo que               su               nombre              completo               es [i]Jazzyweb\AulasMentor\AlimentosBundle\Controller\DefaultController[/i].  La clase extiende  de  [i]Symfony\Bundle\FrameworkBundle\Controller\Controller[/i], la  cual forma parte de  [i]Symfony2[/i] y, aunque no es necesario  que nuestros controladores deriven de dicha clase, si lo hacemos nos facilitará mucho  la vida, ya que esta clase base cuenta con potentes herramientas  para trabajar  con [i]Symfony2[/i].   Posiblemente  la más  útil sea  el  [i]Contenedor de  Dependencias[/i] tambien  conocido como [i]Contenedor  de Servicios[/i], con el que podemos obtener  fácilmente instancias bien configuradas de cualquier servicio del framework, tanto de los incluidos en la distribución estándard, como de  los que  nosotros creemos  o de los  que se  añadan en  las extensiones  de terceros ([i]vendors[/i])  que podamos instalar. Quédate tranquilo  con esto  de los servicios pues será un tema que abordaremos más adelante. Por lo pronto es suficiente con que sepas que los servicios son objetos  ofrecidos por el  framework para realizar determinadas  tareas (como por ejemplo enviar  emails o  manipular una base de datos).
+
+[nota]
+    [b]Sobre los espacios de nombre de PHP 5.3[/b]
+    Si en la línea 7 se utiliza únicamente el nombre [i]Controller[/i] en lugar del    nombre completo [i]Symfony\Bundle\FrameworkBundle\Controller\Controller[/i],    es por que previamente, en la línea 5, se ha indicado en el archivo que se    va a utilizar la clase [i]Controller[/i] de dicho espacio de nombre.[/nota]
+
+El método [i]indexAction()[/i] es una [b]acción[/b] , es decir, un método que está mapeado en una [i]URL[/i] a través de una ruta. Dichas rutas se definen en un fichero, que utilizarás intensivamente cuando desarrollas aplicaciones con [i]Symfony2[/i], denominado [i]routing.yml[/i]. La  acción [i]indexAction()[/i] define un  array asociativo con los datos "crudos" (raw) [i]mensaje[/i] y [i]fecha[/i], y se los pasa a una plantilla para que  los  pinte. Esto  último  se  hace en  la  línea  17 utilizando  el  método [i]render[/i]  de  la  clase padre [i]Symfony\Bundle\FrameworkBundle\Controller\Controller[/i]. Este método recibe dos argumentos,  el  primero es  el  nombre  lógico de  la  plantilla  que se  desea utilizar,   y   el   segundo   es   un   array   asociativo   con   los   datos.
+
+Las acciones terminan con la devolución de un objeto [i]Response[/i]. Precisamente, el método [i]render[/i] convierte una plantilla en un objeto de este tipo.
+
+El  método [i]render[/i]  es uno  de los  servicios disponibles  en el  framework y accesible       desde       cualquier       clase      que       derive       de [i]Symfony\Bundle\FrameworkBundle\Controller\Controller[/i].  Es  un  servicio  que usaremos hasta  la saciedad. El  nombre lógico de  una plantilla, es  similar al nombre lógico  de un controlador;  está compuesto por  el nombre del  bundle, el nombre   del  directorio   que   aloja   a  la   plantilla   en  el   directorio [i]Resources/view[/i] (que suele  coincidir con el nombre del  controlador, en este caso [i]Default[/i]), y el nombre del  archivo que implementa la plantilla (en este caso  [i]index.html.twig[/i]).    Es     decir    que     el    nombre     lógico:
+
+[i]JazzywebAulasMentorAlimentosBundle:Default:index.html.twig[/i],  hace referencia al   archivo [i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/index.html.twig[/i].         
+
+[h4]Creación de la plantilla[/h4]
+
+Siguiendo los pasos  para la creación de una página  en [i]Symfony2[/i], lo siguiente que   tenemos   que   hacer   es   crear  la   plantilla.   Edita   el   fichero [i]src/Jazzyweb/AulasMentor AlimentosBundle/Resources/view/Default/index.html.twig[/i] con el siguiente contenido:
+
+[code]<h1>Inicio</h1>
+   <h3> Fecha: {{fecha}}  </h3>
+   {{mensaje}}[/code]
+   
+Aunque [i]Symfony2[/i]  permite el uso de  [i]PHP[/i] como sistema de  plantillas, en este tutorial  utilizaremos  [i]Twig[/i],  que  es lo  recomendado  oficialmente.  El  código anterior es una plantilla  [i]twig[/i].
+
+En  [i]twig[/i], el  contenido dinámico,  es  decir, los  datos "crudos"  que le  son pasados desde el controlador (segundo argumento del método [i]render[/i] en la acción [i]indexAction()[/i]), se referencian con dobles llaves ([i]{{ dato }}[/i]).  En el ejemplo anterior [i]{{ fecha }}[/i] hace referencia al elemento [i]fecha[/i] del array construido en  el controlador, y [i]{{ mensaje }}[/i],  como ya has deducido, al elemento [i]mensaje[/i] de dicho array.
+
+Pues  con  esto hemos  terminado.  Vamos  a probar  lo  que  acabamos de  hacer. Introduce en la barra de direcciones  de tu navegador la [i]URL[/i] correspondiente a la  ruta  que   acabamos  de  crear.  Utiliza  el   controlador  de  desarrollo:
+ 
+  [code]http://localhost/Symfony/web/app_dev.php/[/code]
+
+¡Vaya! parece que nada de lo que hemos hecho ha funcionado. Vuelve a aparecer la aplicación demo de [i]Symfony2[/i].
+
+Ahora prueba con el controlador de producción:
+
+[code]   http://localhost/Symfony/web/app.php/[/code]
+
+¡Ahora si! Vemos la pantalla de  inicio de nuestro [i]bundle[/i]. Pero entonces, ¿qué está pansando?  las rutas tienen  distinto sentido según el  controlador frontal que usemos.  ¿Por qué?. La respuesta  a este comportamiento se  encuentra en las distintas configuraciones  que se  cargan en función  del entorno  de ejecución. Cuando utilizamos el controlador frontal de desarrollo [i]app_dev.php[/i], se carga el fichero de  routing [i]app/config/routing_dev.php[/i]. Si le echas  un vistazo al fichero verás que comienza con la siguiente ruta:
+
+   [code] _welcome:
+	pattern:  /
+	defaults: { _controller: AcmeDemoBundle:Welcome:index }[/code]
+
+La cual colisiona con la que nosotros hemos  creado, ya que el patrón de la ruta es el  mismo: "/". El sistema  de enrutamiento de [i]Symfony2[/i]  va leyendo todas las rutas  y cuando encuentra una  que coincide con  la [i]URL[/i] que se  ha pedido, ejecuta la acción asociada. No sigue leyendo  más rutas. Por eso, si en un mismo proyecto hay dos rutas, o más precisamente, dos patrones de rutas que coincidan, se ejecutará la primera que se encuentre. Atención por que no se producirá ningún error. Esto hay que tenerlo muy en cuenta cuando se desarrolla  con [i]Symfony2[/i]  para evitarnos  algún que  otro dolor  de cabeza.
+
+En el  caso del controlador frontal  de producción, el framework  lee el fichero [i]routing.yml[/i], ya que no existe [i]routing_prod.yml[/i]. Mira el fichero y podrás comprobar que no hay  ninguna ruta que colisione con la  que nosotros hemos definido. Por tanto todo está bien y se ejecuta la acción correcta.
+
+Una vez que sabemos las causas del problema, si queremos que el controlador de desarrollo cargue la ruta de nuestro [i]bundle[/i], cualquier solución que propongamos pasa por evitar la colisión entre rutas. Y para ello podemos hacer varias cosas:
+
+1. Deshabilitar el plugin *[i]AcmeDemoBundle[/i]* y sus rutas.
+
+2. Cambiar el patrón de las rutas del plugin [i]AcmeDemoBundle[/i], anteponiendole   a todas ellas un prefijo ([i]acme[/i], por ejemplo)
+
+3. Cambiar el patrón de las rutas del   [i]Jazzyweb/AulasMentorAlimentosBundle[/i],   anteponiéndole a todas ellas un prefijo ([i]alimentos[/i], por ejemplo)
+
+Con el fin  de ilustrar una carácteristica del sistema  de routing, hemos optado por la 3ª solución. Podemos añadir un prefijo a todas las rutas del [i]bundle[/i] sin más  que cambiar  el parámetro  [i]prefix[/i] en  la ruta  importada en  el archivo [i]app/config/routing.yml[/i]:
+
+  [code] JazzywebAulasMentorAlimentosBundle:
+     resource: "@JazzywebAulasMentorAlimentosBundle/Resources/config/routing.yml"
+     prefix:   /alimentos[/code]
+ 
+Ahora, para ver la página de inicio de nuestro *bundle*, apuntamos nuestro navegador a:
+
+  [code] http:://localhost/app_dev.php/alimentos/[/code]
+
+Y ya está! A partir de ahora todas las rutas de nuestro [i]bundle[/i] llevarán el prefijo [i]alimentos[/i] delante.
+ 
+ [nota]  Como hemos cambiado un fichero de configuración, para que el cambio se haga
+   efectivo en el entorno de producción hay que borrar la caché con el siguiente
+   comando:
+
+   
+    [code]  # app/console  cache:clear --env=prod[/code]
+[/nota]
+
+[h4]Decoración de la plantilla con un layout[/h4]
+
+Te habrás dado cuenta que hemos pintado un bloque [i]HTML[/i] incompleto. Si no te has percatado de ello mira el código fuente [i]HTML[/i] que llega al navegador. Nos falta someter a la plantilla al proceso de decoración, mediante el cual se le añade funcionalidad. En el caso de la aplicación de [i]gestión de alimentos[/i] hay que añadir la cabecera con el menú, el pie de página y los estilos.
+
+[nota]
+   Sobre el proceso de decoración:
+
+   En una aplicación web,  muchas de las páginas tienen elementos comunes. Por    ejemplo, un caso típico es la cabecera (donde se coloca el mensaje de bienvenida),   el menú y el pie de página. Este hecho, y la aplicación del conocido principio de   buenas prácticas de programación [i]DRY[/i] ([i]Don't Repeat Yourself[/i], No Te Repitas),   lleva a que cualquier sistema de plantillas que se utilice para implementar la   vista utilice un conocido patrón de diseño: El [i]Decorator[/i], o Decorador.   Aplicado a la generación de vistas la solución que ofrece dicho patrón es la de   añadir funcionalidad adicional a las plantillas. Por ejemplo, añadir el menú y el   pie de página a las plantillas que lo requieran, de manera que dichos elementos   puedan reutilizarse en distintas plantillas. Literalmente se trata de [i]decorar[/i]   las plantillas con elementos adicionales reutilizables.
+[/nota]
+
+El sistema de plantillas *[i]twig[/i]*, está provisto de un mecanismo de herencia gracias al cual la decoración de plantillas resulta de una flexibilidad y versatilidad total. Podemos hacer cualquier cosa que nos imaginemos, como por ejemplo fragmentar la vista en distintas plantillas organizadas por criterios funcionales, y combinarlas para producir la vista completa. Podemos colocar en una un menú, en otra un pie de página, en otra la estructura básica del documento *[i]HTML[/i]*, otra puede pintar un listado de *twitts*, etcétera.
+
+La herencia es un mecanismo típico de la programación orientada a objetos mediante el que un componente software hereda todas las funcionalidades de otro y puede extenderlas y/o cambiarlas. Es exactamente esto lo que ocurre cuando una plantilla [i]twig[/i] hereda de otra.
+
+En [i]twig[/i] la herencia se implementa mediante el concepto de bloque. En las plantillas podemos delimitar [i]bloques[/i] que comienzan con un [i]{% block nombre_bloque %}[/i] y finalizan con [i]{% endblock %}[/i]. Las plantillas heredan todas las funcionalidades de las plantillas que extienden y pueden cambiar el código de los bloques heredadados. Como siempre un ejemplo vale más que mil palabras.
+
+Fíjate en el fichero [i]app/Resources/view/base.html.twig[/i] que viene de serie en la distribución standard de [i]Symfony2[/i]:
+
+[i]app/Resources/view/base.html.twig[/i]
+
+  [code] <!DOCTYPE html>
+   <html>
+	 <head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <title>{% block title %}Welcome!{% endblock %}</title>
+	        {% block stylesheets %}{% endblock %}
+	    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+	 </head>
+	 <body>
+	    {% block body %}{% endblock %}
+	    {% block javascripts %}{% endblock %}
+	 </body>
+   </html>[/code]
+
+Representa la estructura básica de un documento [i]HTML[/i]. Y presenta varios bloques: [i]title[/i], [i]stylesheets[/i], [i]body[/i] y [i]javascripts[/i]. Esta plantilla es ofrecida por [i]Symfony2[/i] para que sirva de ejemplo. Pero puede utilizarse como plantilla básica de casi cualquier aplicación web. 
+
+Vamos a modificar nuestra plantilla [i]index.html.twig[/i] para que la herede (o para que la extienda, son dos maneras de decir lo mismo):
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/index.twig.html[/i]
+  
+[code]{% extends '::base.html.twig' %}
+
+   {% block body %}
+	
+	<h1>Inicio</h1>
+	<h3> Fecha: {{fecha}}  </h3>
+	{{mensaje}}
+	
+   {% endblock %}[/code]
+
+En la línea 1 se indica la herencia de la plantilla base. Esto significa que la plantilla [i]JazzywebAulasMentorAlimentosBundle:Default:index.twig.html[/i] asume todo el contenido de la plantilla [i]::base.html.twig[/i]. Pero además se modifica el contenido del bloque [i]body[/i] con las líneas 5-7.
+
+Si además queremos modificar el bloque [i]title[/i], no tenemos más que añadirlo en nuestra plantilla [i]index.html.twig[/i]: 
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/Default/index.twig.html[/i]
+
+ [code]  {% extends '::base.html.twig' %}
+
+   {%  block title %}
+     Bienvenido a la aplicación alimentos
+   {% endblock %}
+
+   {% block body %}
+	
+	<h1>Inicio</h1>
+	<h3> Fecha: {{fecha}}  </h3>
+	{{mensaje}}
+	
+   {% endblock %}[/code]
+
+Ahora, en la sección [i]<title>[/i] del documento se pintará: [i]Bienvenido a la aplicación alimentos[/i] en lugar de [i]Welcome[/i].
+
+Puedes probar a recargar la página a través de la [i]URL[/i]:
+
+[code]  http://localhost/Symfony/web/app_dev.php/alimentos/[/code]
+
+Aunque el aspecto de la página es el mismo que antes, si ves el código fuente [i]HTML[/i] en el navegador, comprobarás que el documento está completo, es decir, con todas sus etiquetas [i]HTML[/i]. También puedes comprobar que, al utilizar el controlador frontal de desarrollo, aparece en la parte de abajo de la página la barra de depuración de [i]Symfony2[/i]. 
+
+[nota]Recuerda el concepto de nombre lógico de una plantilla. Y fíjate en el nombre    lógico de la plantilla [i]::base.html.twig[/i]. Como no pertenece a ningún   [i]bundle[/i] (es común a la aplicación), y está úbicada directamente en el    directorio [i]view[/i], no lleva nada ni antes del primer ":" ni del segundo.[/nota]
+
+La herencia de plantillas puede llevarse a cabo a varios niveles, esto es, una plantilla puede heredar de otra plantilla que a su vez hereda de otra plantilla, etcétera. No obstante no se recomienda llevar a cabo muchos niveles de herencia, ya que puede llegar a ser bastante confuso e incontrolable. La estrategia que recomiendan los creadores de [i]Symfony2[/i] es usar tres niveles de herencia: 
+
+[list]
+[*] en el primer nivel se colocan la estructura básica del documento [i]HTML[/i], se  corresponde con lo que hace la plantilla [i]::base.html.twig[/i],
+
+[*] en el segundo se colocan los elementos específicos de cada sección del sitio,  por ejemplo el menú de la sección,
+
+[*] y en el tercero se reserva para los elementos propios de la acción, se   corresponde con nuestra plantilla    [i]JazzywebAulasMentorAlimentosBundle:Default:index.twig.html[/i]
+
+[/list]
+ 
+Tan sólo nos falta incluir los menús que serán comunes a todas las páginas de la aplicación. Seguiremos la estrategia de tres niveles de herencia que acabamos de exponer. Creamos la plantilla genéral [i]JazzywebAulasMentorAlimentosBundle::layout.html.twig[/i]. Según la lógica de los nombres lógicos, esta se debe ubicar en:
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/layout.twig.html[/i]
+
+  [code] {% extends '::base.html.twig' %}
+
+   {% block body %}
+   <div id="cabecera">
+     <h1>Información de alimentos</h1>
+   </div>
+
+   <div id="menu">
+   <hr/>
+     <a href="{{ path('JAMAB_homepage')}}">inicio</a> |
+     <a href="#">ver alimentos</a> |
+     <a href="#">insertar alimento</a> |
+     <a href="#">buscar por nombre</a> |
+     <a href="">buscar por energia</a> |
+     <a href="">búsqueda combinada</a>
+   <hr/>
+   </div>
+
+   <div id="contenido">
+   {% block contenido %}
+
+   {% endblock %}
+   </div>
+
+   <div id="pie">
+   <hr/>
+   <div align="center">- pie de página -</div>
+   </div>
+
+   {% endblock %}[/code]
+
+[nota]
+En la línea 10 hemos usado la función ``path`` de *twig* para construir   la *URL's* del menú. Está función recibe como argumento el nombre de la ruta   cuya *URL* se desea calcular. Únicamente la hemos usado en el primer enlace    del menú, pués, por ahora, es la única ruta que hemos definido.
+[/nota]
+   
+Ahora es esta plantilla la que extiende a la plantilla base, por tanto, habrá que cambiar la plantilla
+[i]JazzywebAulasMentorAlimentosBundle:Default:index.twig.html[/i] para que extienda de [i]JazzywebAulasMentorAlimentosBundle::layout.twig.html[/i], y para que redefina el bloque [i]contenido[/i] de esta última. Quedaría así:
+
+   [code]{% extends 'JazzywebAulasMentorAlimentosBundle::layout.html.twig' %}
+
+   {% block contenido %}
+   
+   <h1>Inicio</h1>
+   <h3> Fecha: {{fecha}}  </h3>
+   {{mensaje}}
+
+   {% endblock %}[/code]
+
+Vuelve a probar la página. Ya sólo nos falta incorporarle estilos [b]CSS's[/b].
+
+[h4]Instalación de los [i]assets[/i] de un [i]bundle[/i][/h4]
+
+Ya hemos dicho que un [i]bundle[/i] es un directorio que aloja todo aquello relativo a una funcionalidad determinada. Puede incluir clases [i]PHP[/i], plantillas, configuraciones, [i]CSS[/i]’s y [i]javascripts[/i].
+
+Cuando los [i]bundles[/i] incluyen [i]assets[/i], es decir archivos que no son procesados por [i]PHP[/i] si no que son servidos directamente por el servidor web ([i]CSS[/i]'s, [i]javascripts[/i] e imágenes son los [i]assets[/i] más habituales), estos deben ser copiados dentro del directorio [i]web[/i] del proyecto o enlazados desde dicho directorio, ya que es ahí únicamente donde el servidor web puede acceder en busca de archivos (suponiendo que lo hemos configurado correctamente para un entorno de producción).
+
+Por otro lado en un *bundle* los *[i]assets[/i]* deben ser ubicados en el directorio [i]Resources/public[/i]. Si lo examinas verás que tiene la siguiente estructura:
+
+   [code] Resources
+    &#9492;&#9472; public
+       &#9500;&#9472;&#9472; css
+       &#9500;&#9472;&#9472; images
+       &#9492;&#9472;&#9472; js[/code]
+
+Se ha reservado un directorio para cada tipo de [i]asset[/i]. Copia el siguiente código [i]CSS[/i]'s en el archivo [i]Resources/public/css[/i] del [i]bundle[/i].
+   
+   [css] body {
+      padding-left: 11em;
+      font-family: Georgia, "Times New Roman",
+            Times, serif;
+      color: purple;
+      background-color: #d8da3d }
+    ul.navbar {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      position: absolute;
+      top: 2em;
+      left: 1em;
+      width: 9em }
+    h1 {
+      font-family: Helvetica, Geneva, Arial,
+            SunSans-Regular, sans-serif }
+    ul.navbar li {
+      background: white;
+      margin: 0.5em 0;
+      padding: 0.3em;
+      border-right: 1em solid black }
+    ul.navbar a {
+      text-decoration: none }
+    a:link {
+      color: blue }
+    a:visited {
+      color: purple }
+    address {
+      margin-top: 1em;
+      padding-top: 1em;
+      border-top: thin dotted }
+    #contenido {
+      display: block;
+      margin: auto;
+      width: auto;
+      min-height:400px;
+    }
+[/css]
+
+Para que el servidor web la pueda cargar, se utiliza el siguiente comando de consola:
+  
+ [code]php app/console assets:install web --symlink[/code]
+
+La función de este comando es realizar una copia o un enlace simbólico (si se especifica la opión [i]--symlink[/i], aunque en la plataforma [i]Windows[/i] esto último no es posible) del contenido de los directorios [i]Resouces/public[/i] de todos los [i]bundles[/i] que se encuentren registrados en el framework. El comando requiere un argumento ([i]web[/i] en nuestro caso), que especifica el directorio donde se realizará la copia o el enlace simbólico. 
+
+Dicha copia o enlazado se organiza de la siguiente manera:
+
+    [code]web
+    &#9500;&#9472; nombre_bundle_1
+    |  &#9500;&#9472;&#9472; css
+    |  &#9500;&#9472;&#9472; images
+    |  &#9492;&#9472;&#9472; js
+    &#9500;&#9472; nombre_bundle_2
+    |  &#9500;&#9472;&#9472; css
+    |  &#9500;&#9472;&#9472; images
+    |  &#9492;&#9472;&#9472; js
+    ...
+    &#9492;&#9472; nombre_bundle_N
+       &#9500;&#9472;&#9472; css
+       &#9500;&#9472;&#9472; images
+       &#9492;&#9472;&#9472; js[/code]
+
+Ya sólo falta incluir una referencia en el código [i]HTML[/i] a la [i]CSS[/i] que acabamos de incorporar. Aunque es posible incluir el enlace a la [i]CSS[/i] directamente en la plantilla [i]::base.html.twig[/i], el lugar correcto es en la plantilla [i]JazzywebAulasMentosAlimentosBundle::layout.html.twig[/i]. Teniendo en cuenta lo que hemos explicado acerca del mecanismo de herencia, habría que añadir un bloque [i]stylesheets[/i] (heredado de la plantilla padre [i]::base.html.twig[/i]), en el que se haga referencia al archivo [i]CSS[/i].
+
+[i]src/Jazzyweb/AulasMentor/AlimentosBundle/Resources/view/layout.html.twig[/i]
+  
+[code]...
+   {% block stylesheets %}
+    <link href="{{ asset('bundles/jazzywebaulasmentoralimentos/css/estilo.css') }}" type="text/css" rel="stylesheet" />
+   {% endblock %} 
+   ...[/code]
+ 
+En este código hemos utilizado la función de [i]twig[/i] [i]asset[/i], la cual crea la [i]URL[/i] correcta que apunta al asset en cuestion. La ruta que toma como argumento  la función asset se especifica tomando como raíz el directorio [i]web[/i].
+
+[nota] Puedes colocar el bloque [i]stylesheets[/i] delante o detrás del bloque [i]body[/i].[/nota]
+
+Recarga la página y la verás con los estilos aplicados.
+
+ ____________________________________________________________________________________
+
+Este trabajo, por Juan David Rodríguez García<juanda at ite.educacion.es>, se encuentra bajo una  Licencia [url=http://creativecommons.org/licenses/by-nc-sa/3.0/]Creative Commons Reconocimiento-NoComercial-CompartirIgual 3.0 Unported[/url].
+
+[img]http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png[/img]
+
+[nota]El original de este tutorial puedes encontrarlo en: [url=http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2/]http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2[/url]/[/nota]
+

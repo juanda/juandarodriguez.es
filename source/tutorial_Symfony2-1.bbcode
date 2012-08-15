@@ -1,0 +1,314 @@
+[h2]Tutorial de introducción a Symfony2[/h2]
+
+El objetivo este tutorial es ofrecer una visión panorámica del framework PHP para el desarrollo de aplicaciones web [i]Symfony2[/i]. El desarrollo de una sencilla aplicación aplicación web servirá como elemento vertebrador de este documento.
+
+Debido a la extensión del tutorial lo hemos dividido en tres partes. 
+
+En la primera de ellas presentamos los aspectos fundamentales y consta de los siguientes apartados:
+
+[list]
+[*] ¿Qué es Symfony2?
+[*] Instalación y configuración de Symfony2
+[*] Los Bundles: Plugins de primera clase
+[/list]
+
+En la segunda comenzamos el desarrollo de la aplicación de ejemplo. En este parte, a medida que se desarrolla la aplicación, se presentan la mayor parte de los conceptos clave del framework. Consta del siguiente apartado:
+[list]
+[*] La aplicación gestión de alimentos en Symfony2
+[/list]
+
+Finalmente en la tercera continuamos con el desarrollo de la aplicación, aunque ahora la densidad de conceptos importantes disminuye, y casi todo se puede hacer aplicando lo que ya se ha estudiado. También se ofrece, como conclusión, una chuleta-resumen de todo lo que se ha visto en el tutorial. Consta de los siguientes apartados:
+
+[list]
+[*] Implementamos el resto de la aplicación
+[*] El tutorial en chuletas
+[/list]
+
+Para seguir el tutorial necesitarás un entorno con:
+[list]
+[*] un servidor web con PHP 5.3.x (x>2)
+[*] un servidor MySQL 5
+[*] tu IDE o editor favorito
+[/list]
+[h3]Descripción de la aplicación[/h3]
+Vamos a construir una aplicación web para elaborar y consultar un repositorio de alimentos con datos acerca de sus propiedades dietéticas. Utilizaremos una base de datos para almacenar dichos datos que consistirá en una sola tabla con la siguiente información sobre alimentos:
+[list]
+[*] El nombre del alimento,
+[*] la energía en kilocalorías ,
+[*] la cantidad de proteínas,
+[*] la cantidad hidratos de carbono  en gramos
+[*] la cantidad de fibra en gramos  y
+[*] la cantidad de grasa en gramos,
+[/list]
+todo ello por cada 100 gramos de alimento.
+Aunque se trata de una aplicación muy sencilla,  cuenta con los elementos suficientes para mostrar las características básicas de [i]Symfony2[/i].
+Utilizando algún cliente [i]MySQL[/i] ([i]phpMyAdmin[/i], por ejemplo) crea la siguiente base
+de datos para almacenar los alimentos e introduce algunos registros para probar la 
+aplicación.
+
+ [code]CREATE TABLE `alimentos` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `nombre` varchar(255) NOT NULL,
+      `energia` decimal(10,0) NOT NULL,
+      `proteina` decimal(10,0) NOT NULL,
+      `hidratocarbono` decimal(10,0) NOT NULL,
+      `fibra` decimal(10,0) NOT NULL,
+      `grasatotal` decimal(10,0) NOT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;[/code]
+
+¡Y ya podemos comenzar el tutorial!
+
+¿Qué es [i]Symfony2[/i]?
+
+La respuesta rápida, no por ello menos cierta, es que [i]Symfony2[/i] es un framework
+[i]PHP[/i] para  el desarrollo  de aplicaciones  web. Sin  embargo, los  creadores de
+[i]Symfony2[/i] no la darían por  buena. Posiblemente tampoco aprobasen completamente
+lo  que  voy  a  decir  a  continuación  (¡son  unos  programadores,  además  de
+excelentes, muy "quisquillosos"!).
+
+El  objetivo principal  de [i]Symfony2[/i]  no  es tanto  desarrollar otro  framework
+[i]PHP[/i],  como desarrollar  un conjunto  de componentes  estables, independientes,
+fácilmente acoplables  (que no  acoplados) para  formar sistemas  más complejos,
+mediante los cuales se puedan  resolver problemas relacionados con el desarrollo
+de aplicaciones  web en  [i]PHP[/i]. Obviamente  no es  necesario utilizar  todos los
+componentes  de  [i]Symfony2[/i];  gracias  a su  absoluta  independencia  se  pueden
+utilizar  únicamente aquellos  que se  requieran  para resolver  el problema  en
+cuestión. [i]Symfony2[/i] se presenta así como una  especie de [i]Lego[/i] en el mundo del
+desarrollo en [i]PHP[/i].
+
+Con estos componentes,  uno de los problemas  que se puede resolver es  el de la
+creación de  un framework de  desarrollo web. De hecho, uno de los primeros
+productos que se han construido con estos componentes ha sido el framework de
+desarrollo conocido como [i]Distribución  Standard de Symfony2[/i],  o más  brevemente
+[i]Symfony2[/i] sin  más. Y  es precisamente  del estudio de esta distribución de lo que
+trata este tutorial.
+
+Así pues, el término  [i]Symfony2[/i] puede referirse a:
+
+1. Los componentes de [i]Symfony2[/i]
+
+2. El framework de [i]Symfony2[/i], conocido como [i]distribución standard de Symfony2[/i].
+
+En el momento en que se escribe este texto, lo más probable es que se trate de lo segundo.
+
+Los componentes de [i]Symfony2[/i], se están  utilizando para otros proyectos (Drupal 8 es un buen ejemplo), y su uso  aumentará cuando dispongan  de una  documentación tan exhaustiva  y bien elaborada como la  que cuenta en estos momentos el  framework [i]Symfony2[/i]. 
+
+En este [url=http://symfony.com/components]enlace[/url] encontrarás una relación de todos los componentes de [i]Symfony2[/i] y su documentación.
+
+Los componentes son las "tripas" del monstruo [i]Symfony2[/i]. No hablaremos mucho más acerca
+de estos componentes a lo largo del tutorial. Pero debes saber que existen. Puede que te ayuden a resolver tu próximo proyecto, y muy probablemente sean los ladrillos fundamentales con los que se construyan muchas de las aplicaciones [i]PHP[/i] en un futuro no muy lejano.
+
+[h3]Instalación y configuración de [i]Symfony2[/i][/h3]
+
+A partir de este momento, y mientras no lo especifiquemos explicitamente, cuando hablemos de [i]Symfony2[/i]  nos estamos refiriendo al framework, concretamente a la edición estándard.
+
+En este apartado vamos a instalar y configurar [i]Symfony2[/i], y lo dejaremos listo para construir la aplicación de gestión de alimentos sobre él.
+
+Bájate de [url=http://symfony.com/download]http://symfony.com/download[/url] la última versión de la rama 2.0 de [i]Symfony2[/i]. Verás que hay una modalidad normal y otra [i]without vendor[/i]s. Utiliza la primera. 
+    
+ [nota] La modalidad normal contiene todas las librerías de terceros ([i]vendors[/i])   necesarias para comenzar a trabajar con el framework, mientras que la modalidad [i]without vendors[/i], como su nombre indica, viene sin estas librerías, razón  por lo que hay que instalarlas posteriormente mediante una herramienta incluida    con [i]Symfony2[/i] ([i]bin/vendors[/i]) que utiliza el sistema de control de versiones   [i]git[/i] para bajar las últimas versiones desde el repositorio de [i]github[/i],  donde se encuentra todo el código de [i]Symfony2[/i]. [/nota]
+
+Descomprime el archivo descargado en algún directorio accesible al servidor web, esto es, dentro de su [i]Document root[/i]. Para que la aplicación funcione, el servidor web debe poder escribir en los directorios [i]app/cache[/i] y [i]app/logs[/i]. Si estás utilizando un sistema operativo tipo [i]UNIX[/i] ([i]Ubuntu[/i], [i]MacOSX[/i], etcétera), la forma más fácil de dar dichos permisos es:
+ 
+[code]chmod -R 777 app/cache app/logs[/code]
+
+  [nota] Durante toda el tutorial suponemos que has hecho esta operación directamente en 
+   el [i]Document root[/i] del servidor web, de manera que tendrá la siguiente 
+   estructura de directorios:
+    
+   [code] /var/www/    (o donde tengas mapeado tu Document root)
+        |
+        &#9492;&#9472;&#9472; Symfony
+	    |
+	    &#9500;&#9472;&#9472; LICENSE
+	    &#9500;&#9472;&#9472; README.md
+	    &#9500;&#9472;&#9472; app/
+	    &#9500;&#9472;&#9472; bin/
+	    &#9500;&#9472;&#9472; deps
+	    &#9500;&#9472;&#9472; deps.lock
+	    &#9500;&#9472;&#9472; src/
+	    &#9500;&#9472;&#9472; vendor/
+	    &#9492;&#9472;&#9472; web/[/code]
+   
+   Y que tanto el servidor web como el servidor de MySQL están instalado en la
+   máquina local.[/nota]
+
+A continuación comprobamos que nuestro sistema cumple los requisitos mínimos
+ejecutando por la interfaz de comandos la siguiente orden:
+
+[code]php app/check.php[/code]
+
+Si el resultado nos señala algún error, debemos resolverlo antes de continuar. Una vez que pasemos al menos los requisitos obligatorios ([i]mandatory requirements[/i]), podemos ejecutar la demo que viene incorporada en la distribución standard de [i]Symfony2[/i]. Para ello apunta con tu navegador a la siguiente [i]URL[/i]:
+
+[code] http://localhost/Symfony/web/app_dev.php[/code]
+
+¡Y juega un poquito!, Por ejemplo, pica en [i]Run the dem[/i]o y navega por los distintos enlaces. Fíjate en la pinta que tienen las [i]URL[/i]'s. La demo muestra el código que genera las páginas de la propia demo. Fíjate en él detenidamente. Verás que muestra dos partes: el del controlador y el de la plantilla ([i]template[/i]). Es decir, dos elementos del patrón de diseño [i]MVC[/i] (Modelo - Vista - Controlador).
+
+Ya has visto en acción la primera aplicación construida con [i]Symfony2[/i]. Ahora vamos a describir la manera en que [i]Symfony2[/i] organiza el código.
+
+[i]Symfony2[/i] organiza los archivos en dos grupos: los que deben estar directamente accesibles al servidor web ([i]CSS[/i]'s, [i]Javascript[/i], imágenes y el controlador frontal) y los que pueden ser incluidos desde el controlador frontal (librerías [i]PHP[/i] y ficheros de configuración). Los primeros viven en el directorio [i]web[/i], y los segundos, según su funcionalidad, están repartidos entre los directorios [i]app[/i] , [i]src[/i] y [i]vendor[/i]. 
+
+  [nota] En una instalación en un entorno de producción, el [i]Document roo[/i]t del servidor
+   web (o del [i]Virtual host[/i] dedicado para la aplicación), debe coincidir con el 
+   directorio [i]web[/i], y el resto de directorios deben ubicarse fuera del
+   [i]Document root[/i]. No obstante, en un entorno de desarrollo podemos relajarnos y,
+   para no andar afinando las configuraciones del servidor web, se puede ubicar todo
+   el código dentro del [i]Document root[/i].
+
+   Para paliar el efecto de posibles despistes o malas prácticas por 
+   desconocimiento, pereza y otras fatales causas, los directorios [i]src[/i] y
+   [i]app[/i], contienen un fichero [i].htacces[/i] que indica al servidor web que
+   no debe mostrar su contenido.[/nota]
+
+Veamos ahora para que se utiliza cada uno de estos directorios.
+
+[h4]El directorio web[/h4]
+
+Poco hay que decir ya de este directorio, aquí encontraremos el controlador frontal y todos los [i]assets[/i] de la aplicación: [i]CSS[/i]'s, [i]Javascipts[/i], imágenes, etcétera. 
+
+Esta es la estructura del directorio:
+
+  [code] web
+   &#9500;&#9472;&#9472; app_dev.php
+   &#9500;&#9472;&#9472; apple-touch-icon.png
+   &#9500;&#9472;&#9472; app.php
+   &#9500;&#9472;&#9472; bundles
+   &#9474;   &#9500;&#9472;&#9472; acmedemo
+   &#9474;   &#9500;&#9472;&#9472; framework
+   &#9474;   &#9500;&#9472;&#9472; sensiodistribution
+   &#9474;   &#9492;&#9472;&#9472; webprofiler
+   &#9500;&#9472;&#9472; config.php
+   &#9500;&#9472;&#9472; favicon.ico
+   &#9492;&#9472;&#9472; robots.txt[/code]
+
+Podemos ver 3 scripts [i]PHP[/i]: 
+
+[list]
+[*] [i]config.php[/i] es un script que asiste en la configuración del framework. No  es imprescindible. De hecho cuando uno se siente confortable con Symfony2,  es más sencillo realizar la configuración directamente sobre el código  fuente. Pero para empezar puede servir de ayuda. Si lo utilizas ten en cuenta  los permisos de los ficheros del directorio [i]app/config[/i], pues este script   debe poder escribir allí.
+
+[*] [i]app.php [/i]es el controlador frontal de la aplicación, es decir, es el script  [i]PHP[/i] por el que pasan todas las peticiones. Este script decide el flujo que debe  seguir la aplicación "observando" los parámetros que se hayan  pasado en cada   petición ([i]request[/i]). Un conjunto de parámetros determinado se denomina ruta.   Veamos un ejemplo para aclararlo: en
+  
+ [code] http://tu.servidor.web/app.php/articulo/1[/code],
+
+ [i] app.php[/i], es el controlador frontal y [i]articulo/1[/i] es una ruta de la aplicación.
+
+[*][i] app_dev.php[/i] también es el controlador frontal de la aplicación. ¿Cómo?  ¿dos controladores frontales? ¡eso no parece encajar con lo que acabamos de decir!.  Bueno tranquilos, tiene su explicación. Se trata de lo que se denomina en   [i]Symfony2[/i] el controlador frontal de [b]desarrollo[/b]. En principio pinta lo  mismo que [i]app.php[/i], pero le añade una barra de depuración que ofrece  muchísima información sobre todo lo relacionado con la ejecución del script.  Puedes ver la barra de depuración en la demo que has ejecutado hace un momento.  Se encuentra abajo de la página. Explórala un poco, te asombrarás de la cantidad  de información que te proporciona. Cuando desarrollamos es muy conveniente  utilizar este controlador frontal, pero en producción NUNCA debe utilizarse,  pues  daríamos a los usuario de la web información que podría comprometer  nuestro sistema.
+[/list]
+
+Por otro lado los [i]assets[/i]  se ubicarán en el directorio [i]bundles/nombre_bundle[/i], donde [i]nombre_bundle[/i] es el nombre del [i]bundle[/i] al que pertenece el [i]asset[/i] en cuestión. Vale, ¿y que es un [i]bundle[/i]?, pues por lo pronto quedate con que "es la unidad funcional de código que utiliza [i]Symfony2[/i]". Algo así como una de las piezas del Lego [i]Symfony2[/i]. Más adelante, dedicamos una sección para hablar de estos "personajes" con más detalle.
+
+[h4]El directorio [i]app[/i][/h4]
+La finalidad de este directorio es alojar a a los scripts [i]PHP[/i] encargados de los procesos de carga del framework (lo que se conoce como [i]bootstraping[/i]) y a todo lo que tenga que ver con la configuración general de la aplicación. Los archivos de este directorio son los encargados de [i]unir[/i] y dar cohesión a los distintos componentes del framework.
+
+Son especialmente importantes los ficheros [i]autoload.php[/i] y [i]AppKernel.ph[/i], ya que hay que tocarlos cada vez que extendemos el framework con nuevas funcionalidades, es decir cada vez que incorporamos nuevos [i]bundles[/i] (vamos  poniendo en circulación a esta palabreja que usaremos hasta la saciedad). 
+
+En [i]autoload.ph[/i]p se mapean los espacios de nombres contra los directorios en los que residirán las clases pertenecientes a dichos espacios de nombre. De esa manera el proceso de autocarga de clases sabrá donde tiene que buscar las clases cuando se [i]usen[/i] dichos espacios, sin necesidad de incluir explicitamente (esto es, usando [i]include[/i] o [i]require[/i] ) los archivos donde se definen las clases.
+
+En [i]AppKernel.php[/i], se declaran los [i]bundles[/i] que se utilizarán en la aplicación.
+
+En el directorio [i]config[/i] se encuentran los archivos de configuración de la aplicación: [i]config.yml[/i], [i]routing.yml[/i] y [i]security.yml[/i]. 
+
+El sistema de configuración de [i]Symfony2[/i] permite trabajar con distintos entornos de ejecución. Los más típicos son [i]prod[/i], para producción y [i]dev[/i], para desarrollo. Pero se pueden definir tantos entornos como deseemos. 
+
+En el controlador frontal se indica qué entorno deseamos utilizar en la   ejecución del script. Fíjate en la línea 22 de [i]web/app_dev.php[/i], o en la línea 9 del [i]web/app.ph[/i]p:
+
+ [php] ...
+   $kernel = new AppKernel('prod', false);
+  ...
+[/php]
+
+El primer argumento decide el entorno de ejecución que se utilizará. ¿Y para que sirve esto?. [i]Symfony2[/i] utiliza este dato para saber qué ficheros de configuración debe cargar. Supongamos, por ejemplo, que se especifica [i]dev[/i] como entorno de ejecución. Entonces, si existe el fichero [i]config_dev.yml[/i] lo cargará, y si no es así cargará [i]config.yml[/i]. Lo mismo ocurre con los ficheros[i] routing.yml[/i], [i]security.yml[/i] y [i]services.yml[/i]. Más adelante estudiaremos para que sirven cada uno de ellos. Por lo pronto nos conformaremos con saber
+la dinámica de funcionamiento. 
+
+Los entornos proporcionan mucha flexibilidad a la hora de desarrollar una aplicación. Vamos a ilustrar con un ejemplo esta flexibilidad. Un caso que nos encontramos habitualmente es que la aplicación que estamos construyendo debe enviar e-mails. Es bastante molesto tener que disponer de cuentas reales y gestionarlas para que podamos probar la aplicación mientras desarrollamos. Podemos utilizar este sistema de configuración para indicar al framework que en el entorno de desarrollo se envíen todos los e-mails a una sola cuenta, o incluso que no se envíen. Otro ejemplo típico podría ser el definir unos parámetros de conexión a la base de datos para el entorno de producción y otro para el de  desarrollo.
+
+Una estrategía muy adecuada para tratar con los ficheros de configuración cuando queremos que haya partes comunes y partes diferentes en cada entorno, es definir todos los parámetros comunes en el fichero [i]fichconfig.ym[/i]l (donde [i]fichconfig[/i] es [i]config[/i], [i]security[/i], [i]routing[/i] o [i]services[/i]), y los particulares de cada entorno en el fichero [i]fichconfig_env.yml[/i] (donde [i]env[/i] es [i]dev[/i],  [i]prod[/i] o cualquier otro nombre de entorno que usemos). Por último importamos los primeros (comunes) desde los últimos (particulares) de la siguiente manera:
+
+Inicio del fichero [i]fichconfig_env.yml[/i]
+
+  [code] imports:
+    - { resource: fichconfig.yml }
+    ...[/code]
+
+Puedes comprobar que esta es la estrategia utilizada por la distribución standard de [i]Symfony2[/i] con los ficheros [i]config.yml[/i], [i]config_dev.yml[/i] y [i]config_prod.yml[/i].
+
+Para acelerar la ejecución de los scripts, la configuración, el enrutamiento y las plantillas de twig son compiladas y almacenadas en el directorio [i]cache[/i]. Por otro lado, los errores y otra información de interés acerca de eventos que ocurren cuando se ejecuta el framework, son registrados en archivos que se almacenan en el directorio [i]logs[/i]. Por eso [b]estos dos directorios deben tener permisos de escritura para el servidor web[/b].
+
+Por último, en este directorio tan "denso", encontramos la navaja suiza de [i]Symfony2[/i], la aplicación [i]app/console[/i]. Prueba a ejecutarla sin pasarle ningún argumento. Verás una lista con todas las tareas que se pueden lanzar por línea de comandos.
+
+[code] php app/console[/code]
+
+[h4]El directorio ``vendor``[/h4]
+
+Aquí se aloja todo el código funcional que no es tuyo. Es lo que tradicionalmente
+se conoce como librerías de terceros. Entre otras cosas, el directorio contiene
+los componentes de [i]Symfony2[/i], el ORM [i]Doctrine2[/i] y el sistema de plantillas
+[i]twig[/i]. Cuando amplies tu aplicación con nuevos [i]bundles[/i] de terceros instalados 
+automáticamente con la aplicación [i]bin/vendors[/i], será aquí donde se ubique el
+código.
+
+[h4]El directorio [i]src[/i][/h4]
+
+Es el directorio donde colocarás tu código. Más concretamente: tus [i]bundles[/i].
+A base de utilizar este palabro acabarás por asimilarlo antes de que te lo
+expliquemos :-).
+
+[h4]El directorio [i]bin[/i][/h4]
+
+El nombre de este directorio es un clásico en el mundo [i]UNIX[/i]. En él se colocan
+archivos ejecutables. La distribución standard solo trae el ejecutable [i]vendors[/i]
+que se utiliza, en combinación con el fichero [i]deps[/i] (dependencias), para 
+instalar componentes de terceros ([i]vendors[/i]).
+
+Y con esto acabamos la descripción de los directorios de [i]Symfony2[/i]. Ha llegado
+el momento de hablar de los [i]bundles[/i], esos grandes desconocidos (¡por ahora!).
+
+[h4]Los Bundles: Plugins de primera clase[/h4]
+
+Si los creadores de [i]Symfony2[/i] hubieran elegido la palabra [i]plugin[/i] en lugar de
+[i]bundle[/i], es probable que te hubieses hecho una idea más concreta de lo que es
+un [i]bundle[/i]. Pues bien, por lo pronto, piensa que un [i]bundle[/i] es un [i]plugin[/i], por
+que no es ni más ni menos que eso.
+
+Cualquier framework que se precie debe ofrecer un mecanismo de extensión que 
+permita ampliar la aplicación sin compromenter la escalabilidad. Para ello las
+piezas que se añaden al sistema deben ser bloques prácticamente autónomos y con
+una interfaz sencilla para engancharlos ([i]to plug[/i], en inglés) al sistema. A estos
+bloques se les conoce a lo largo y ancho de la galaxia con el nombre de [i]plugin[/i] 
+(o complemento, en castellano). ¿Por qué los creadores de [i]Symfony2[/i] han decidido
+llamarles [i]bundles[/i] en su lugar? Lo mismo hay alguna razón teórica que se me 
+escapa. Pero de lo que si estoy seguro es de que hay una razón histórica:
+
+El antecesor de [i]Symfony2[/i], el fantástico  [i]symfony 1.x[/i] organiza el código en 
+[i]aplicaciones[/i], que a su vez están formadas por [i]módulos[/i] con la implementación
+de las acciones. Además ofrece un mecanismo de extensión basado en [i]plugins[/i], los 
+cuales también organizan el código en [i]módulos[/i] con sus acciones. Pero a pesar 
+de este paralelismo las aplicaciones son "más importantes" que los [i]plugins[/i]. De 
+hecho, las aplicaciones pueden usar módulos de los [i]plugins[/i], pero lo contrario no
+tiene sentido tal y como está organizado [i]symfony 1.x[/i]. Con el tiempo los 
+desarrolladores se dieron cuenta de que era más fácil de mantener y organizar los [i]plugins[/i], ya que son bloques de código autónomos y fácilmente acoplables a la 
+aplicación. Este hecho llevó de forma natural  a reorganizar la aplicación
+colocando todo el código funcional en los [i]plugins[/i]. Las aplicaciones se quedaban 
+prácticamente vacías de código y tan solo contenían ficheros de configuración.
+
+Así pues, en [i]Symfony2[/i] decidieron olvidarse del concepto de aplicación (en el 
+sentido de [i]symfony 1.x[/i]), y obligar a que todo el código funcional se organizase
+en [i]plugins[/i]. Es como hacer a los [i]plugins[/i] ciudadanos de primera clase del 
+framework. Finalmente, para evitar cualquier confusión y dirimir la diferencia 
+entre [i]plugin[/i] y aplicación, decidieron usar la palabra [i]bundle[/i]. Y eso es todo.
+Si no conoces [i]symfony 1.x[/i], seguro que hubieras preferido llamarle [i]plugin[/i].
+ Y si lo conoces es probable que también.
+
+En fin, lo que realmente debes saber:
+[nota] Un [i]bundle[/i] no es más que un directorio que aloja todo aquello relativo a una 
+ funcionalidad determinada. Puede incluir clases [i]PHP[/i], plantillas,   configuraciones, [i]CSS's[/i] y [i]Javascript[/i].[/nota]
+
+Con esto ponemos fin a la primera parte de este tutorial. En la segunda parte comenzaremos a desarrollar la aplicación de ejemplo. Allí presentaremos y utilizaremos los conceptos claves del framework.
+ ____________________________________________________________________________________
+
+Este trabajo, por Juan David Rodríguez García<juanda at ite.educacion.es>, se encuentra bajo una  Licencia [url=http://creativecommons.org/licenses/by-nc-sa/3.0/]Creative Commons Reconocimiento-NoComercial-CompartirIgual 3.0 Unported[/url].
+
+[img]http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png[/img]
+
+[nota]El original de este tutorial puedes encontrarlo en: [url=http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2/]http://juandarodriguez.es/tutoriales-2/tutorial-de-symfony2[/url]/[/nota]
